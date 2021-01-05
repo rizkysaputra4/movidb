@@ -9,13 +9,13 @@ import (
 )
 
 // Init initialize function
-func Init(){
+func Init() {
 
 	e := echo.New()
 	e.POST("/u", handler.InsertNewUser)
 	e.POST("/insert-country", handler.InsertCountry)
 	e.POST("/insert-user", handler.InsertShortUser)
-	
+
 	fmt.Println("running on port 3001")
 	log.Fatal(e.Start(":3000"))
 }
