@@ -12,10 +12,12 @@ import (
 func Init() {
 
 	e := echo.New()
-	e.POST("/u", handler.InsertNewUser)
+	e.POST("/register", handler.RegisteringNewUser)
 	e.POST("/insert-country", handler.InsertCountry)
-	e.POST("/insert-user", handler.InsertShortUser)
+	e.POST("/insert-short-user", handler.InsertShortUser)
+	e.POST("/check-email", handler.CheckIfEmailExist)
+	e.POST("/check-username", handler.CheckIfUserNameExist)
 
-	fmt.Println("running on port 3001")
+	fmt.Println("running on port 3000")
 	log.Fatal(e.Start(":3000"))
 }

@@ -1,3 +1,48 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+     
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO public;
+
+DROP TABLE IF EXISTS 
+  user_information, 
+  movie_information, 
+  eps_information,
+  movie_reviews,
+  review_comment,
+  movie_comment,
+  user_movie_rating,
+  user_short_info,
+  user_eps_rating,
+  user_social_activity,
+  social_activity_type,
+  like_count_review_comment,
+  like_count_review_movie,
+  like_count_movie_comment,
+  movie_genre,
+  genre_list,
+  identifier,
+  movie_tag,
+  tag_list,
+  person_in_movie,
+  movie_person,
+  role_list,
+  movie_type,
+  user_movie_activity,
+  activity_type,
+  movie_character,
+  country_list,
+  admin_info,
+  admin_login,
+  admin_information,
+  activity_list,
+  ref_table_info,
+  activity_status,
+  private_message,
+  conversation,
+  user_notification,
+  notif_list;
+
 CREATE TABLE "user_information" (
   "user_id" INT NOT NULL,
   "user_full_name" VARCHAR(80) NOT NULL,
@@ -17,8 +62,8 @@ CREATE TABLE "movie_information" (
   "release_date" DATE NOT NULL,
   "imdb_rating" FLOAT(2) NOT NULL,
   "imdb_numb_vote" INT NOT NULL,
-  "site_rating" FLOAT(2) NOT NULL DEFAULT '0',
-  "site_numb_vote" INT NOT NULL DEFAULT '0',
+  "site_rating" FLOAT(2) NOT NULL DEFAULT 0,
+  "site_numb_vote" INT NOT NULL DEFAULT 0,
   "poster_link" VARCHAR(255) NOT NULL,
   "trailer_link" VARCHAR(255),
   "duration" VARCHAR(255) NOT NULL,
@@ -27,7 +72,8 @@ CREATE TABLE "movie_information" (
   "country_id" VARCHAR(2) NOT NULL,
   "language" VARCHAR(255),
   "unique_link" VARCHAR(255) NOT NULL,
-  "identifier_id" INT DEFAULT '0'
+  "identifier_id" INT DEFAULT 0,
+  "overal_rating" FLOAT(4)
 );
 
 CREATE TABLE "eps_information" (
@@ -48,9 +94,9 @@ CREATE TABLE "movie_reviews" (
   "acting_rating" INT NOT NULL,
   "cinema_rating" INT NOT NULL,
   "music_rating" INT NOT NULL,
-  "identifier_id" INT NOT NULL DEFAULT '0',
-  "like_count" INT NOT NULL DEFAULT '0',
-  "timestamp" TIMESTAMP NOT NULL
+  "identifier_id" INT NOT NULL DEFAULT 0,
+  "like_count" INT NOT NULL DEFAULT 0,
+  "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "review_comment" (
@@ -60,8 +106,8 @@ CREATE TABLE "review_comment" (
   "reply_to" INT NOT NULL,
   "user_id" INT NOT NULL,
   "text" TEXT NOT NULL,
-  "like" INT NOT NULL DEFAULT '0',
-  "timestamp" TIMESTAMP NOT NULL
+  "like" INT NOT NULL DEFAULT 0,
+  "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "movie_comment" (
@@ -69,37 +115,33 @@ CREATE TABLE "movie_comment" (
   "reply_to" INT NOT NULL,
   "movie_id" INT NOT NULL,
   "text" TEXT NOT NULL,
-  "like_count" INT NOT NULL DEFAULT '0',
-  "identifier_id" INT NOT NULL DEFAULT '0',
+  "like_count" INT NOT NULL DEFAULT 0,
+  "identifier_id" INT NOT NULL DEFAULT 0,
   "user_id" INT NOT NULL,
-  "timestamp" TIMESTAMP NOT NULL
-);
-
-CREATE TABLE "user_login" (
-  "user_id" INT NOT NULL,
-  "password" VARCHAR(255) NOT NULL,
-  "email" VARCHAR(255) NOT NULL
+  "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "user_movie_rating" (
   "movie_id" INT NOT NULL,
   "user_id" INT NOT NULL,
   "rating" FLOAT(1) NOT NULL,
-  "timestamp" TIMESTAMP NOT NULL
+  "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "user_short_info" (
   "user_id" SERIAL PRIMARY KEY NOT NULL,
-  "user_name" VARCHAR(255) NOT NULL,
+  "user_name" VARCHAR(255) NOT NULL UNIQUE,
   "country_id" VARCHAR(2),
-  "last_request" TIMESTAMP NOT NULL
+  "password" VARCHAR(255) NOT NULL,
+  "email" VARCHAR(255) NOT NULL UNIQUE, 
+  "last_request" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "user_eps_rating" (
   "eps_id" INT NOT NULL,
   "user_id" INT NOT NULL,
   "rating" FLOAT(1) NOT NULL,
-  "timestamp" TIMESTAMP NOT NULL
+  "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "user_social_activity" (
@@ -162,7 +204,7 @@ CREATE TABLE "person_in_movie" (
 CREATE TABLE "movie_person" (
   "person_id" SERIAL PRIMARY KEY,
   "person_name" VARCHAR NOT NULL,
-  "bio" TEXT NOT NULL,
+  "bio" TEXT,
   "birthdate" DATE,
   "role_id" INT NOT NULL,
   "picture_link" VARCHAR
@@ -182,7 +224,7 @@ CREATE TABLE "user_movie_activity" (
   "user_id" INT NOT NULL,
   "activity_id" INT NOT NULL,
   "movie_id" INT NOT NULL,
-  "TIMESTAMP" TIMESTAMP
+  "TIMESTAMP" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "activity_type" (
@@ -207,7 +249,7 @@ CREATE TABLE "admin_info" (
   "admin_id" SERIAL PRIMARY KEY,
   "admin_level" SMALLINT NOT NULL,
   "admin_full_name" VARCHAR NOT NULL,
-  "last_request" TIMESTAMP NOT NULL
+  "last_request" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "admin_login" (
@@ -229,11 +271,11 @@ CREATE TABLE "admin_information" (
 CREATE TABLE "activity_list" (
   "todo_id" SERIAL PRIMARY KEY NOT NULL,
   "info" TEXT NOT NULL,
-  "status_id" INT NOT NULL DEFAULT '0',
+  "status_id" INT NOT NULL DEFAULT 0,
   "admin_id" INT,
   "ref_table" INT NOT NULL,
   "ref_table_id" INT NOT NULL,
-  "timestamp" TIMESTAMP
+  "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "ref_table_info" (
@@ -251,7 +293,7 @@ CREATE TABLE "private_message" (
   "sender_id" INT NOT NULL,
   "reply_to" INT DEFAULT 0,
   "message" VARCHAR NOT NULL,
-  "timestamp" TIMESTAMP NOT NULL
+  "timestamp" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
 CREATE TABLE "conversation" (
@@ -372,8 +414,6 @@ ALTER TABLE "movie_comment" ADD FOREIGN KEY ("reply_to") REFERENCES "movie_comme
 ALTER TABLE "movie_comment" ADD FOREIGN KEY ("movie_id") REFERENCES "movie_information" ("movie_id");
 
 ALTER TABLE "movie_comment" ADD FOREIGN KEY ("user_id") REFERENCES "user_short_info" ("user_id");
-
-ALTER TABLE "user_login" ADD FOREIGN KEY ("user_id") REFERENCES "user_short_info" ("user_id");
 
 ALTER TABLE "user_movie_rating" ADD FOREIGN KEY ("user_id") REFERENCES "user_short_info" ("user_id");
 
