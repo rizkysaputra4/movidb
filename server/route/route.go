@@ -5,19 +5,23 @@ import (
 	"log"
 
 	"github.com/labstack/echo"
-	"github.com/rizkysaputra4/moviwiki/server/route/handler"
+	"github.com/rizkysaputra4/moviwiki/server/env"
+	. "github.com/rizkysaputra4/moviwiki/server/route/handler"
 )
 
-// Init initialize function
-func Init() {
+// InitRoute initialize function
+func InitRoute() {
 
 	e := echo.New()
-	e.POST("/register", handler.RegisteringNewUser)
-	e.POST("/insert-country", handler.InsertCountry)
-	e.POST("/insert-short-user", handler.InsertShortUser)
-	e.POST("/check-email", handler.CheckIfEmailExist)
-	e.POST("/check-username", handler.CheckIfUserNameExist)
+	e.POST("/add-user", RegisteringNewUser)
+	e.PUT("/add-user", UpdateUserShortInfo)
+	e.PUT("/my-profile", UpdateFullUserInfo)
+	e.GET("/my-profile", GetMyProfile)
+	e.POST("/insert-country", InsertCountry)
+	e.POST("/check-email", CheckIfEmailExist)
+	e.POST("/check-username", CheckIfUserNameExist)
 
-	fmt.Println("running on port 3000")
-	log.Fatal(e.Start(":3000"))
+	c := env.GetConfiguration()
+	fmt.Println("running on port", c.ServerAPIPort)
+	log.Fatal(e.Start(c.ServerAPIPort))
 }

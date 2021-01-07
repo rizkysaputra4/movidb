@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	. "github.com/rizkysaputra4/moviwiki/server/db"
 )
 
 // UserShortInfo ...
@@ -20,13 +22,28 @@ type UserShortInfo struct {
 type UserInformation struct {
 	tableName struct{} `pg:"user_information"`
 
-	UserID      int       `pg:"user_id" json:"user_id"`
-	Birthdate   time.Time `pg:"birthdate" json:"birthdate"`
-	SignUpDate  int       `pg:"signup_date" json:"signup_date"`
-	Bio         string    `pg:"bio" json:"bio"`
-	FBLink      string    `pg:"fb_link" json:"fb_link"`
-	TwitterLink string    `pg:"twitter_link" json:"twitter_link"`
-	IGLink      string    `pg:"ig_link" json:"ig_link"`
-	Sex         bool      `pg:"sex" json:"sex"`
-	LastRequest time.Time `pg:"last_request" json:"last_request"`
+	UserID       int    `pg:"user_id" json:"user_id"`
+	UserFullName string `pg:"user_full_name" json:"user_full_name"`
+	Birthdate    string `pg:"birthdate" json:"birthdate"`
+	RegisterDate string `pg:"signup_date" json:"signup_date"`
+	Bio          string `pg:"bio" json:"bio"`
+	FBLink       string `pg:"fb_link" json:"fb_link"`
+	TwitterLink  string `pg:"twitter_link" json:"twitter_link"`
+	IGLink       string `pg:"ig_link" json:"ig_link"`
+	Sex          bool   `pg:"sex" json:"sex"`
+}
+
+// UpdateLastRequest ...
+func (u *UserShortInfo) UpdateLastRequest() error {
+	u.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
+	_, err := DB.Model(u).
+		Where("user_id = ?user_id").
+		Column("last_request").
+		Update()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

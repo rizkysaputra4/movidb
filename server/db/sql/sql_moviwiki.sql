@@ -45,9 +45,9 @@ DROP TABLE IF EXISTS
 
 CREATE TABLE "user_information" (
   "user_id" INT NOT NULL,
-  "user_full_name" VARCHAR(80) NOT NULL,
-  "birthdate" DATE NOT NULL,
-  "signup_date" DATE NOT NULL,
+  "user_full_name" VARCHAR(80),
+  "birthdate" DATE,
+  "signup_date" DATE,
   "bio" VARCHAR(150),
   "fb_link" VARCHAR(80),
   "twitter_link" VARCHAR(40),

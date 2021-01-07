@@ -1,12 +1,13 @@
 package comp
 
 import (
-	"github.com/rizkysaputra4/moviwiki/server/db"
+	. "github.com/rizkysaputra4/moviwiki/server/db"
+	"github.com/rizkysaputra4/moviwiki/server/model"
 )
 
 // CheckIfExist ...
 func CheckIfExist(column string, element string, c interface{}) bool {
-	err := db.DB.Model(c).Column(column).
+	err := DB.Model(c).Column(column).
 		Where(column+"= ?", element).
 		Select()
 
@@ -15,4 +16,14 @@ func CheckIfExist(column string, element string, c interface{}) bool {
 	}
 
 	return false
+}
+
+// BasicResponse ...
+func BasicResponse(errorID bool, errorMessage string) model.StatusResponse {
+	err := &model.StatusResponse{
+		Status:  errorID,
+		Message: errorMessage,
+	}
+
+	return *err
 }

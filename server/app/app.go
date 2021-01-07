@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/route"
 )
 
 // Init initialize function
-func Init(){
-	db.Init()
+func Init() {
+	route.InitRoute()
 	fmt.Println(time.Now().Unix())
 
-	route.Init()
 }
