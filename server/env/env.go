@@ -20,6 +20,8 @@ type Configuration struct {
 	PostgresDB       string `env:"postgres_db" default:"moviwiki"`
 
 	ServerAPIPort string `env:"server_api_port" default:":3000"`
+
+	SALT string `env:"salt" default:"MOVIWIKIPASS"`
 }
 
 var serviceConfig Configuration

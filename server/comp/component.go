@@ -1,8 +1,11 @@
 package comp
 
 import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
 	. "github.com/rizkysaputra4/moviwiki/server/db"
-	"github.com/rizkysaputra4/moviwiki/server/model"
 )
 
 // CheckIfExist ...
@@ -18,12 +21,30 @@ func CheckIfExist(column string, element string, c interface{}) bool {
 	return false
 }
 
+// StatusResponse ...
+type StatusResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+}
+
 // BasicResponse ...
-func BasicResponse(errorID bool, errorMessage string) model.StatusResponse {
-	err := &model.StatusResponse{
+func BasicResponse(w http.ResponseWriter, code int, errorID bool, errorMessage string) {
+	err := &StatusResponse{
 		Status:  errorID,
 		Message: errorMessage,
 	}
+	response, _ := json.Marshal(err)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
 
-	return *err
+// ResJSON ...
+func ResJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+
+	fmt.Println(payload)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
 }
