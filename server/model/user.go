@@ -15,6 +15,20 @@ type UserShortInfo struct {
 	CountryID   string `pg:"country_id" json:"country_id"`
 	Password    string `pg:"password" json:"password"`
 	Email       string `pg:"email" json:"email"`
+	Role        int    `pg:"role" json:"role"`
+	LastRequest string `pg:"last_request" json:"last_request"`
+}
+
+// AdminInfo ...
+type AdminInfo struct {
+	tableName struct{} `pg:"user_short_info"`
+
+	UserID      int    `pg:"user_id" json:"user_id"`
+	UserName    string `pg:"user_name" json:"user_name"`
+	CountryID   string `pg:"country_id" json:"country_id"`
+	Password    string `pg:"password" json:"password"`
+	Email       string `pg:"email" json:"email"`
+	Role        int    `pg:"role" json:"role"`
 	LastRequest string `pg:"last_request" json:"last_request"`
 }
 

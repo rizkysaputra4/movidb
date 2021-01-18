@@ -3,10 +3,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-
-	"github.com/labstack/echo"
-	"github.com/rizkysaputra4/moviwiki/server/comp"
-	"github.com/rizkysaputra4/moviwiki/server/db"
 )
 
 // CountryList contain list of all country
@@ -19,29 +15,29 @@ type CountryList struct {
 }
 
 // InsertCountry ...
-func InsertCountry(e echo.Context) error {
+func InsertCountry(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Inserting User")
 
 	//var userShortInfo model.UserShortInfo
-	countryList := &CountryList{}
+	// countryList := &CountryList{}
 
-	err := e.Bind(&countryList)
-	if err != nil {
-		fmt.Println("err1 ---------------------")
-		return err
-	}
+	// err := e.Bind(&countryList)
+	// if err != nil {
+	// 	fmt.Println("err1 ---------------------")
+	// 	return err
+	// }
 
-	isAlreadyExist := comp.CheckIfExist("country_id", countryList.CountryID, countryList)
-	if isAlreadyExist {
-		return e.JSON(http.StatusBadRequest, comp.BasicResponse(false, "country already exist"))
-	}
+	// isAlreadyExist := comp.CheckIfExist("country_id", countryList.CountryID, countryList)
+	// if isAlreadyExist {
+	// 	return e.JSON(http.StatusBadRequest, comp.BasicResponse(false, "country already exist"))
+	// }
 
-	_, err = db.DB.Model(countryList).Insert()
+	// _, err = db.DB.Model(countryList).Insert()
 
-	if err != nil {
-		fmt.Println("---------------------------")
-		panic(err)
-	}
+	// if err != nil {
+	// 	fmt.Println("---------------------------")
+	// 	panic(err)
+	// }
 
-	return e.JSON(http.StatusOK, countryList)
+	// return e.JSON(http.StatusOK, countryList)
 }

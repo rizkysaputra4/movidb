@@ -88,6 +88,7 @@ CREATE TABLE "eps_information" (
 CREATE TABLE "movie_reviews" (
   "review_id" SERIAL PRIMARY KEY NOT NULL,
   "movie_id" INT NOT NULL,
+  "eps_id" INT DEFAULT 0,
   "user_id" INT NOT NULL,
   "text" TEXT NOT NULL,
   "story_rating" INT NOT NULL,
@@ -114,6 +115,7 @@ CREATE TABLE "movie_comment" (
   "comment_id" SERIAL PRIMARY KEY NOT NULL,
   "reply_to" INT NOT NULL,
   "movie_id" INT NOT NULL,
+  "eps_id" INT DEFAULT 0,
   "text" TEXT NOT NULL,
   "like_count" INT NOT NULL DEFAULT 0,
   "identifier_id" INT NOT NULL DEFAULT 0,
@@ -133,7 +135,8 @@ CREATE TABLE "user_short_info" (
   "user_name" VARCHAR(255) NOT NULL UNIQUE,
   "country_id" VARCHAR(2),
   "password" VARCHAR(255) NOT NULL,
-  "email" VARCHAR(255) NOT NULL UNIQUE, 
+  "email" VARCHAR(255) NOT NULL UNIQUE,
+  "role" INT DEFAULT 21,
   "last_request" TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0)
 );
 
@@ -198,6 +201,7 @@ CREATE TABLE "tag_list" (
 CREATE TABLE "person_in_movie" (
   "person_id" INT NOT NULL,
   "movie_id" INT NOT NULL,
+  "eps_id" INT DEFAULT 0,
   "role_id" INT NOT NULL
 );
 
@@ -314,6 +318,12 @@ CREATE TABLE "notif_list" (
   "notif_id" INT PRIMARY KEY NOT NULL,
   "notification_type" VARCHAR NOT NULL
 );
+
+ALTER TABLE "movie_reviews" ADD FOREIGN KEY ("eps_id") REFERENCES "eps_information" ("eps_id");
+
+ALTER TABLE "person_in_movie" ADD FOREIGN KEY ("eps_id") REFERENCES "eps_information" ("eps_id");
+
+ALTER TABLE "movie_comment" ADD FOREIGN KEY ("eps_id") REFERENCES "eps_information" ("eps_id");
 
 ALTER TABLE "user_notification" ADD FOREIGN KEY ("notif_id") REFERENCES "notif_list" ("notif_id");
 

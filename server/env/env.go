@@ -22,6 +22,10 @@ type Configuration struct {
 	ServerAPIPort string `env:"server_api_port" default:":3000"`
 
 	SALT string `env:"salt" default:"MOVIWIKIPASS"`
+
+	SessionKey string `env:"session_key" default:"moviwiki"`
+
+	TokenKey string `env:"session_key" default:"moviwiki"`
 }
 
 var serviceConfig Configuration

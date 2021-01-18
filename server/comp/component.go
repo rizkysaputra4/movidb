@@ -2,7 +2,6 @@ package comp
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	. "github.com/rizkysaputra4/moviwiki/server/db"
@@ -28,9 +27,9 @@ type StatusResponse struct {
 }
 
 // BasicResponse ...
-func BasicResponse(w http.ResponseWriter, code int, errorID bool, errorMessage string) {
+func BasicResponse(w http.ResponseWriter, code int, isError bool, errorMessage string) {
 	err := &StatusResponse{
-		Status:  errorID,
+		Status:  isError,
 		Message: errorMessage,
 	}
 	response, _ := json.Marshal(err)
@@ -42,9 +41,8 @@ func BasicResponse(w http.ResponseWriter, code int, errorID bool, errorMessage s
 // ResJSON ...
 func ResJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
-
-	fmt.Println(payload)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
 }
+
