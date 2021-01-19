@@ -67,7 +67,7 @@ func DeleteSession(w http.ResponseWriter, r *http.Request) {
 
 	session.Options.MaxAge = -1
 	if err = sessions.Save(r, w); err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when saving the session")
 	}
 }
 
@@ -75,7 +75,7 @@ func DeleteSession(w http.ResponseWriter, r *http.Request) {
 func StoreJWT(w http.ResponseWriter, r *http.Request, userID int, role int) {
 	token, err := CreateToken(uint64(userID), role)
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when creating JWT")
 	}
 
 	c := &http.Cookie{

@@ -22,15 +22,17 @@ func CheckIfExist(column string, element string, c interface{}) bool {
 
 // StatusResponse ...
 type StatusResponse struct {
-	Status  bool   `json:"status"`
-	Message string `json:"message"`
+	Status  int         `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 // BasicResponse ...
-func BasicResponse(w http.ResponseWriter, code int, isError bool, errorMessage string) {
+func BasicResponse(w http.ResponseWriter, code int, errorMessage string, data interface{}) {
 	err := &StatusResponse{
-		Status:  isError,
+		Status:  code,
 		Message: errorMessage,
+		Data:    data,
 	}
 	response, _ := json.Marshal(err)
 	w.Header().Set("Content-Type", "application/json")

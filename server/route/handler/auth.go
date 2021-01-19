@@ -17,13 +17,13 @@ func CheckIfEmailExist(w http.ResponseWriter, r *http.Request) {
 	shortInfo := &model.UserShortInfo{}
 
 	if err := json.NewDecoder(r.Body).Decode(&shortInfo); err != nil || shortInfo.Email == "" {
-		comp.BasicResponse(w, http.StatusBadRequest, false, "Error when decoding")
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
 		return
 	}
 
 	column := "email"
 	if isExist := comp.CheckIfExist(column, shortInfo.Email, shortInfo); isExist {
-		comp.BasicResponse(w, http.StatusBadRequest, false, "Email is already exist")
+		comp.BasicResponse(w, http.StatusBadRequest, "Email is already exist", "")
 		return
 	}
 
@@ -35,18 +35,18 @@ func CheckIfUserNameExist(w http.ResponseWriter, r *http.Request) {
 	shortInfo := &model.UserShortInfo{}
 
 	if err := json.NewDecoder(r.Body).Decode(&shortInfo); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
 		return
 	}
 
 	if err := CheckUserName(shortInfo.UserName); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "")
 		return
 	}
 
 	column := "user_name"
 	if isExist := comp.CheckIfExist(column, shortInfo.UserName, shortInfo); isExist {
-		comp.BasicResponse(w, http.StatusBadRequest, false, "UserName is already exist")
+		comp.BasicResponse(w, http.StatusBadRequest, "UserName is already exist", "")
 		return
 	}
 
@@ -57,7 +57,7 @@ func CheckIfUserNameExist(w http.ResponseWriter, r *http.Request) {
 func CheckIfUserExist(w http.ResponseWriter, r *http.Request) {
 	info := &model.UserShortInfo{}
 	if err := json.NewDecoder(r.Body).Decode(&info); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
 		return
 	}
 
@@ -68,11 +68,11 @@ func CheckIfUserExist(w http.ResponseWriter, r *http.Request) {
 		Select()
 
 	if err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "User does not exist")
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, true, "User Exist")
+	comp.BasicResponse(w, http.StatusOK, "", "User Exist")
 }
 
 // Login ...
@@ -87,7 +87,7 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 	pw := &Login{}
 	userInfo := &model.UserShortInfo{}
 	if err := json.NewDecoder(r.Body).Decode(&pw); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
 		return
 	}
 	err := DB.Model(userInfo).
@@ -97,12 +97,12 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 		Select()
 
 	if err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when selecting user cred from db")
 		return
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(pw.Pw)); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when bcrypting user password")
 		return
 	}
 
@@ -114,14 +114,14 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 
 	userInfo.UpdateLastRequest()
 
-	comp.ResJSON(w, http.StatusOK, userInfo)
+	comp.BasicResponse(w, http.StatusOK, "", userInfo)
 }
 
 // LogOut ...
 func LogOut(w http.ResponseWriter, r *http.Request) {
 	middleware.DeleteSession(w, r)
 	middleware.DeleteJWTFromCookie(w, r)
-	comp.BasicResponse(w, http.StatusOK, true, "logout success")
+	comp.BasicResponse(w, http.StatusOK, "", "logout success")
 }
 
 // RegisteringNewUser is handling register request
@@ -129,17 +129,17 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 
 	shortInfo := &model.UserShortInfo{}
 	if err := json.NewDecoder(r.Body).Decode(&shortInfo); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
 		return
 	}
 
 	if shortInfo.Password == "" || len(shortInfo.Password) < 6 {
-		comp.BasicResponse(w, http.StatusBadRequest, false, "Password too Short, must be 6 character long")
+		comp.BasicResponse(w, http.StatusBadRequest, "Password too Short, must be 6 character long", "")
 		return
 	}
 
 	if err := CheckUserName(shortInfo.UserName); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "")
 		return
 	}
 
@@ -148,7 +148,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 	shortInfo.Password = string(hashedPassword)
 	shortInfo.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when bcrypting password")
 		return
 	}
 
@@ -157,7 +157,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 		Insert()
 
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user credential into db")
 		return
 	}
 
@@ -168,7 +168,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 
 	_, err = DB.Model(completeUserData).Insert()
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user profile into db")
 		return
 	}
 

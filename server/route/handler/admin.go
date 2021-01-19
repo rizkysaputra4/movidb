@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rizkysaputra4/moviwiki/server/comp"
+	res "github.com/rizkysaputra4/moviwiki/server/comp"
 	. "github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/model"
 	"golang.org/x/crypto/bcrypt"
@@ -16,17 +16,17 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 	newAdmin := &model.UserShortInfo{}
 
 	if err := json.NewDecoder(r.Body).Decode(&newAdmin); err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when decode request body")
 		return
 	}
 
 	if newAdmin.Password == "" || len(newAdmin.Password) < 6 {
-		comp.BasicResponse(w, http.StatusBadRequest, false, "Password too Short, must be 6 character long")
+		res.BasicResponse(w, http.StatusBadRequest, "Password too Short, must be 6 character long", "")
 		return
 	}
 
 	if err := CheckUserName(newAdmin.UserName); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		res.BasicResponse(w, http.StatusBadRequest, err.Error(), "")
 		return
 	}
 
@@ -37,7 +37,7 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 
 	_, err = DB.Model(newAdmin).Insert()
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user credential into db")
 		return
 	}
 
@@ -48,11 +48,11 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 
 	_, err = DB.Model(completeUserData).Insert()
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, false, err.Error())
+		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user data profile to db")
 		return
 	}
 
-	comp.ResJSON(w, http.StatusOK, newAdmin)
+	res.ResJSON(w, http.StatusOK, newAdmin)
 }
 
 // ChangeAdminLevel handler to promote user into admin
@@ -60,7 +60,7 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 	admin := &model.UserShortInfo{}
 
 	if err := json.NewDecoder(r.Body).Decode(&admin); err != nil {
-		comp.BasicResponse(w, http.StatusBadGateway, false, err.Error())
+		res.BasicResponse(w, http.StatusBadGateway, "Error when decode request body", err.Error())
 		return
 	}
 
@@ -69,8 +69,8 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 		Column("role").
 		Update()
 	if err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, false, err.Error())
+		res.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when update data into db")
 	}
 
-	comp.ResJSON(w, http.StatusOK, admin)
+	res.BasicResponse(w, http.StatusOK, "", admin)
 }
