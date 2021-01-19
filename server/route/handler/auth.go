@@ -120,6 +120,8 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 // LogOut ...
 func LogOut(w http.ResponseWriter, r *http.Request) {
 	middleware.DeleteSession(w, r)
+	middleware.DeleteJWTFromCookie(w, r)
+	comp.BasicResponse(w, http.StatusOK, true, "logout success")
 }
 
 // RegisteringNewUser is handling register request

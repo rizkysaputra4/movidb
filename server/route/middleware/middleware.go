@@ -47,6 +47,7 @@ func StoreSession(w http.ResponseWriter, r *http.Request, userID int, role int) 
 		MaxAge:   3600,
 		HttpOnly: true,
 		Secure:   false,
+		Path:     "/",
 	}
 
 	if err = sessions.Save(r, w); err != nil {
@@ -108,9 +109,15 @@ func GetJWTClaims(w http.ResponseWriter, r *http.Request) (jwt.MapClaims, error)
 	return claims, nil
 }
 
-// DeleteJWT ...
-func DeleteJWT(w http.ResponseWriter, r *http.Request) {
+// DeleteJWTFromCookie ...
+func DeleteJWTFromCookie(w http.ResponseWriter, r *http.Request) {
+	c := &http.Cookie{
+		Name:    "Auth-Token",
+		Expires: time.Now(),
+		Path:    "/",
+	}
 
+	http.SetCookie(w, c)
 }
 
 // CreateToken ...
