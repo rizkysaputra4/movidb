@@ -159,6 +159,8 @@ func DeleteJWTFromCookie(w http.ResponseWriter, r *http.Request) {
 	c := &http.Cookie{
 		Name:   "Auth-Token",
 		MaxAge: -1,
+		Value:  "",
+		Path:   "/",
 	}
 
 	http.SetCookie(w, c)
