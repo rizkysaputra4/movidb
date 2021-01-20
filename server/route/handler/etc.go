@@ -68,12 +68,15 @@ func RoleOrderPermission(w http.ResponseWriter, r *http.Request, obj interface{}
 	err := db.DB.Model(obj).
 		Where("user_id = ?user_id").
 		Column("role").Select(&objRoleInDB)
-
+	fmt.Println("objRole", objRoleInDB)
+	fmt.Println("requested role", requestedRole)
+	fmt.Println("subjectRole", subjectRole)
+	fmt.Println("obj", obj)
 	if err != nil {
 		return false, err
 	}
 
-	if subjectRole > objRoleInDB || subjectRole > requestedRole {
+	if subjectRole > objRoleInDB || subjectRole >= requestedRole {
 		return false, nil
 	}
 

@@ -80,7 +80,7 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = DB.Model(&admin).
+	_, err = DB.Model(admin).
 		Where("user_id = ?user_id").
 		Column("role").
 		Update()

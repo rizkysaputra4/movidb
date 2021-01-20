@@ -153,7 +153,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = DB.Model(shortInfo).
-		Column("user_name", "country_id", "password", "email", "last_request").
+		Column("user_id", "user_name", "country_id", "password", "email", "last_request").
 		Insert()
 
 	if err != nil {

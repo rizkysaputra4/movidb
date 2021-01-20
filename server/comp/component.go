@@ -2,7 +2,6 @@ package comp
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	. "github.com/rizkysaputra4/moviwiki/server/db"
@@ -35,7 +34,7 @@ func BasicResponse(w http.ResponseWriter, code int, errorMessage string, data in
 		Message: errorMessage,
 		Data:    data,
 	}
-	fmt.Println("basic response")
+
 	response, _ := json.Marshal(err)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)

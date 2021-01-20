@@ -127,7 +127,7 @@ func StoreJWT(w http.ResponseWriter, r *http.Request, userID int, role int) {
 		//	Domain:   "localhost",
 		Path: "/",
 	}
-
+	fmt.Println(token)
 	http.SetCookie(w, c)
 }
 
@@ -225,6 +225,7 @@ func UpdateSessionExp(next http.Handler) http.Handler {
 		}
 
 		session.Options.MaxAge = 3600
+		session.Options.HttpOnly = true
 		db.Store.SetMaxAge(3600)
 		sessions.Save(r, w)
 		next.ServeHTTP(w, r)
@@ -239,6 +240,7 @@ func UpdateJWTExp(next http.Handler) http.Handler {
 		t, err := r.Cookie("Auth-Token")
 		if err == nil {
 			t.Expires = time.Now().Add(time.Hour * 168)
+			t.HttpOnly = true
 			t.Path = "/"
 			http.SetCookie(w, t)
 		}
