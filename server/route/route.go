@@ -121,6 +121,7 @@ func adminRouter() http.Handler {
 	// r.Put("/update-admin", UpdateAdminLevel) // Update the admin level
 
 	r.Route("/movie", func(r chi.Router) {
+		r.Post("/add-new-movie-type", h.AddNewMovieType)
 		// 	r.Post("/new-movie", AddNewMovie)
 		// 	r.Delete("/movie?{movie-id}", DeleteMovie)
 		// 	r.Put("/movie?{movie-id}", AdminApproveUpdateMovie)

@@ -220,7 +220,7 @@ CREATE TABLE "role_list" (
 );
 
 CREATE TABLE "movie_type" (
-  "type_id" SERIAL PRIMARY KEY,
+  "type_id" INT PRIMARY KEY,
   "type_name" VARCHAR NOT NULL
 );
 
@@ -626,3 +626,18 @@ INSERT INTO country_list (id, country_name, country_id, alpha_3) VALUES
 (887,'Yemen','ye','yem'),
 (894,'Zambia','zm','zmb'),
 (716,'Zimbabwe','zw','zwe');
+
+INSERT INTO movie_type (type_id, type_name) VALUES
+(1, 'Movie'),
+(2, 'TV Series'),
+(3, 'KDrama'),
+(4, 'Dorama'),
+(5, 'Anime');
+
+INSERT INTO identifier (identifier_id, info) VALUES
+(1, 'On Display'),
+(2, 'On Review'),
+(3, 'Need Review'),
+(4, 'Hidden'),
+(5, 'Reported'),
+(6, 'Deleted');

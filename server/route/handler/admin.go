@@ -110,3 +110,20 @@ func AddAnotherIdentifier(w http.ResponseWriter, r *http.Request) {
 	comp.BasicResponse(w, http.StatusOK, "OK", newIdentifier)
 
 }
+
+// AddNewMovieType is adding new movie type
+func AddNewMovieType(w http.ResponseWriter, r *http.Request) {
+	newMovieType := &model.MovieType{}
+
+	if err := json.NewDecoder(r.Body).Decode(newMovieType); err != nil {
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when decoding request body")
+		return
+	}
+
+	if _, err := db.DB.Model(newMovieType).Insert(); err != nil {
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting data into db")
+		return
+	}
+
+	comp.BasicResponse(w, http.StatusOK, "OK", newMovieType)
+}
