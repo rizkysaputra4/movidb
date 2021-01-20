@@ -117,17 +117,18 @@ func adminRouter() http.Handler {
 
 	r.Post("/register-new-admin", h.RegisterNewAdmin) // register new admin
 	r.Put("/admin-level", h.ChangeAdminLevel)         // Promote regular user to admin
+	r.Post("/new-identifier", h.AddAnotherIdentifier)
 	// r.Put("/update-admin", UpdateAdminLevel) // Update the admin level
 
-	// r.Route("/movie", func(r chi.Router) {
-	// 	r.Post("/new-movie", AddNewMovie)
-	// 	r.Delete("/movie?{movie-id}", DeleteMovie)
-	// 	r.Put("/movie?{movie-id}", AdminApproveUpdateMovie)
-	// 	r.Post("/tag", AdminAddNewMovieTag)
-	// 	r.Put("/tag?{tag-id}", AdminApproveEditTag)
-	// 	r.Post("/genre", AdminAddNewGenre)
-	// 	r.Put("/genre?{genre-id}", AdminApproveEditGenre)
-	// })
+	r.Route("/movie", func(r chi.Router) {
+		// 	r.Post("/new-movie", AddNewMovie)
+		// 	r.Delete("/movie?{movie-id}", DeleteMovie)
+		// 	r.Put("/movie?{movie-id}", AdminApproveUpdateMovie)
+		// 	r.Post("/tag", AdminAddNewMovieTag)
+		// 	r.Put("/tag?{tag-id}", AdminApproveEditTag)
+		// 	r.Post("/genre", AdminAddNewGenre)
+		// 	r.Put("/genre?{genre-id}", AdminApproveEditGenre)
+	})
 
 	// r.Route("/act-crew", func(r chi.Router) {
 	// 	r.Put("/act-crew?{act-crew-id}", AdminApproveEditActInfo)

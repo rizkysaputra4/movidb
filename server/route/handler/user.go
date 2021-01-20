@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/rizkysaputra4/moviwiki/server/comp"
-	. "github.com/rizkysaputra4/moviwiki/server/db"
+	"github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/model"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -32,7 +32,7 @@ func GetMyProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := DB.Model(userProfile).Where("user_id = ?user_id").Select(); err != nil {
+	if err := db.DB.Model(userProfile).Where("user_id = ?user_id").Select(); err != nil {
 		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when selecting user profile from db")
 		return
 	}
@@ -56,7 +56,7 @@ func UpdateFullUserInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := DB.Model(userProfile).
+	_, err := db.DB.Model(userProfile).
 		Where("user_id = ?user_id").
 		Column("user_full_name", "birthdate", "bio", "fb_link", "twitter_link", "ig_link", "sex").
 		Update()
@@ -96,7 +96,7 @@ func UpdateUserShortInfo(w http.ResponseWriter, r *http.Request) {
 	userShortInfo.Password = string(hashedPassword)
 	userShortInfo.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
 
-	_, err = DB.Model(userShortInfo).
+	_, err = db.DB.Model(userShortInfo).
 		Where("user_id = ?user_id").
 		Column("user_name", "country_id", "password", "email", "last_request").
 		Update()

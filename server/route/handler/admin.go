@@ -8,7 +8,7 @@ import (
 
 	"github.com/rizkysaputra4/moviwiki/server/comp"
 	res "github.com/rizkysaputra4/moviwiki/server/comp"
-	. "github.com/rizkysaputra4/moviwiki/server/db"
+	"github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/model"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -37,7 +37,7 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 	newAdmin.Password = string(hashedPassword)
 	newAdmin.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
 
-	_, err = DB.Model(newAdmin).Insert()
+	_, err = db.DB.Model(newAdmin).Insert()
 	if err != nil {
 		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user credential into db")
 		return
@@ -48,7 +48,7 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 		RegisterDate: time.Now().UTC().Format("2006-01-02"),
 	}
 
-	_, err = DB.Model(completeUserData).Insert()
+	_, err = db.DB.Model(completeUserData).Insert()
 	if err != nil {
 		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user data profile to db")
 		return
@@ -80,7 +80,7 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = DB.Model(admin).
+	_, err = db.DB.Model(admin).
 		Where("user_id = ?user_id").
 		Column("role").
 		Update()
@@ -89,4 +89,24 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res.BasicResponse(w, http.StatusOK, "", admin)
+}
+
+// AddAnotherIdentifier is adding another flag when needed
+func AddAnotherIdentifier(w http.ResponseWriter, r *http.Request) {
+	newIdentifier := &model.Identifier{}
+
+	if err := json.NewDecoder(r.Body).Decode(newIdentifier); err != nil {
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when decode request body")
+		return
+	}
+
+	fmt.Println(newIdentifier)
+
+	if _, err := db.DB.Model(newIdentifier).Insert(); err != nil {
+		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting data into db")
+		return
+	}
+
+	comp.BasicResponse(w, http.StatusOK, "OK", newIdentifier)
+
 }

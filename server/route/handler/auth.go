@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/rizkysaputra4/moviwiki/server/comp"
-	. "github.com/rizkysaputra4/moviwiki/server/db"
+	"github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/model"
 	"github.com/rizkysaputra4/moviwiki/server/route/middleware"
 	"golang.org/x/crypto/bcrypt"
@@ -61,7 +61,7 @@ func CheckIfUserExist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := DB.Model(info).
+	err := db.DB.Model(info).
 		Column("user_id", "user_name", "email").
 		Where("user_name = ?user_name").
 		WhereOr("email = ?email").
@@ -90,7 +90,7 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
 		return
 	}
-	err := DB.Model(userInfo).
+	err := db.DB.Model(userInfo).
 		Where("user_name = ?", pw.Username).
 		WhereOr("email = ?", pw.Email).
 		Column("user_id", "user_name", "email", "password", "role").
@@ -152,7 +152,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = DB.Model(shortInfo).
+	_, err = db.DB.Model(shortInfo).
 		Column("user_id", "user_name", "country_id", "password", "email", "last_request").
 		Insert()
 
@@ -166,7 +166,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 		RegisterDate: time.Now().UTC().Format("2006-01-02"),
 	}
 
-	_, err = DB.Model(completeUserData).Insert()
+	_, err = db.DB.Model(completeUserData).Insert()
 	if err != nil {
 		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user profile into db")
 		return
