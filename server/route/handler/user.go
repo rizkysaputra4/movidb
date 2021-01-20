@@ -44,7 +44,7 @@ func GetMyProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comp.ResJSON(w, http.StatusOK, userProfile)
+	comp.BasicResponse(w, http.StatusOK, "OK", userProfile)
 }
 
 // UpdateFullUserInfo ...
@@ -105,5 +105,5 @@ func UpdateUserShortInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comp.ResJSON(w, http.StatusOK, userShortInfo)
+	comp.BasicResponse(w, http.StatusOK, "OK", userShortInfo)
 }

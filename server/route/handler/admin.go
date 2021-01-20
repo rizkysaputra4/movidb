@@ -2,9 +2,11 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/rizkysaputra4/moviwiki/server/comp"
 	res "github.com/rizkysaputra4/moviwiki/server/comp"
 	. "github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/model"
@@ -52,7 +54,7 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res.ResJSON(w, http.StatusOK, newAdmin)
+	comp.BasicResponse(w, http.StatusOK, "OK", newAdmin)
 }
 
 // ChangeAdminLevel handler to promote user into admin
@@ -63,8 +65,15 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 		res.BasicResponse(w, http.StatusBadGateway, "Error when decode request body", err.Error())
 		return
 	}
+	fmt.Println(admin.Role)
+	authStats, err := RoleOrderPermission(w, r, admin, admin.Role)
 
-	_, err := DB.Model(admin).
+	if !authStats || err != nil {
+		res.BasicResponse(w, http.StatusUnauthorized, err.Error(), "Unauthorized")
+		return
+	}
+
+	_, err = DB.Model(admin).
 		Where("user_id = ?user_id").
 		Column("role").
 		Update()

@@ -27,7 +27,7 @@ func CheckIfEmailExist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comp.ResJSON(w, http.StatusOK, shortInfo)
+	comp.BasicResponse(w, http.StatusOK, "OK", shortInfo)
 }
 
 // CheckIfUserNameExist ...
@@ -50,7 +50,7 @@ func CheckIfUserNameExist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comp.ResJSON(w, http.StatusOK, shortInfo)
+	comp.BasicResponse(w, http.StatusOK, "OK", shortInfo)
 }
 
 // CheckIfUserExist ...
@@ -172,5 +172,5 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	comp.ResJSON(w, http.StatusOK, shortInfo)
+	comp.BasicResponse(w, http.StatusOK, "OK", shortInfo)
 }

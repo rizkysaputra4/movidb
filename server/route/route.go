@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/rizkysaputra4/moviwiki/server/env"
 	h "github.com/rizkysaputra4/moviwiki/server/route/handler"
+	"github.com/rizkysaputra4/moviwiki/server/route/middleware"
 )
 
 // InitRoute initialize function
@@ -24,47 +25,8 @@ func InitRoute() {
 		r.Get("/logout", h.LogOut)
 	})
 
+	r.Mount("/member", MemberRoute())
 	r.Mount("/admin", adminRouter())
-
-	r.Route("/user", func(r chi.Router) {
-		// 	r.Put("/id?{user-id}", UpdateFullUserInfo) // Update user profile
-		// 	r.Get("/id?{user-id}", GetUserCredential) // Get user credential
-		// 	r.Delete("/id?{user-id}", DeleteUser)
-		r.Put("/uid", h.UpdateUserShortInfo) // Update user login credentials
-		// 	r.Post("/report?{user-id}", ReportUser)
-
-		// 	r.Route("/movie", func(r chi.Router) {
-		// 		r.Post("/add-movie", SuggestAddNewMovie)
-		// 		r.Put("/edit?{movie-id}", SuggestUpdateMovie)
-		// 		r.Put("/delete?{movie-id}", UserSuggestDeleteMovie)
-
-		// 		r.Route("/id?{movie-id}", func(r chi.Router) {
-		// 			r.Post("/review", UserPostReview)
-		// 			r.Put("/review?{review-id}", UpdateReview)
-		// 			r.Post("/report?{review-id}", ReportReview)
-
-		// 			r.Post("/comment", UserPostComment)
-		// 			r.Put("/like", UserLikeComment)
-		// 			r.Delete("comment?{comment-id}", UserDeleteComment)
-		// 			r.Post("/comment?{comment-id}", UserReportComment)
-
-		// 			r.Route("/eps?{eps-id}", func(r chi.Router) {
-		// 				r.Post("/add-eps", SuggestAddNewEps)
-		// 				r.Put("/edit", SuggestUpdateEps)
-		// 				r.Put("/delete", UserSuggestDeleteEps)
-
-		// 				r.Post("/review", UserPostReviewEps)
-		// 				r.Put("/review?{eps-review-id}", UpdateReviewEps)
-		// 				r.Post("/report?{eps-review-id}", ReportReviewEps)
-
-		// 				r.Post("/comment", UserPostCommentEps)
-		// 				r.Put("/like", UserLikeCommentEps)
-		// 				r.Delete("comment?{eps-comment-id}", UserDeleteCommentEps)
-		// 				r.Post("/comment?{eps-comment-id}", UserReportCommentEps)
-		// 			})
-		// 		})
-		// 	})
-	})
 
 	// r.Route("/public", func(r chi.Router) {
 	// 	r.Route("/user", func(r chi.Router) {
@@ -110,7 +72,9 @@ func InitRoute() {
 func adminRouter() http.Handler {
 
 	r := chi.NewRouter()
-	// r.Use()
+	r.Use(middleware.RoleEnforcer)
+	r.Use(middleware.UpdateJWTExp)
+	r.Use(middleware.UpdateSessionExp)
 
 	r.Post("/register-new-admin", h.RegisterNewAdmin) // register new admin
 	r.Put("/admin-level", h.ChangeAdminLevel)         // Promote regular user to admin
@@ -154,6 +118,53 @@ func adminRouter() http.Handler {
 	// 	r.Put("/punish?{user-id}", AdminPunishUser)
 
 	// })
+
+	return r
+}
+
+// MemberRoute ...
+func MemberRoute() http.Handler {
+	r := chi.NewRouter()
+	r.Use(middleware.RoleEnforcer)
+	r.Use(middleware.UpdateJWTExp)
+
+	// 	r.Put("/id?{user-id}", UpdateFullUserInfo) // Update user profile
+	// 	r.Get("/id?{user-id}", GetUserCredential) // Get user credential
+	// 	r.Delete("/id?{user-id}", DeleteUser)
+	r.Put("/uid", h.UpdateUserShortInfo) // Update user login credentials
+	// 	r.Post("/report?{user-id}", ReportUser)
+
+	// 	r.Route("/movie", func(r chi.Router) {
+	// 		r.Post("/add-movie", SuggestAddNewMovie)
+	// 		r.Put("/edit?{movie-id}", SuggestUpdateMovie)
+	// 		r.Put("/delete?{movie-id}", UserSuggestDeleteMovie)
+
+	// 		r.Route("/id?{movie-id}", func(r chi.Router) {
+	// 			r.Post("/review", UserPostReview)
+	// 			r.Put("/review?{review-id}", UpdateReview)
+	// 			r.Post("/report?{review-id}", ReportReview)
+
+	// 			r.Post("/comment", UserPostComment)
+	// 			r.Put("/like", UserLikeComment)
+	// 			r.Delete("comment?{comment-id}", UserDeleteComment)
+	// 			r.Post("/comment?{comment-id}", UserReportComment)
+
+	// 			r.Route("/eps?{eps-id}", func(r chi.Router) {
+	// 				r.Post("/add-eps", SuggestAddNewEps)
+	// 				r.Put("/edit", SuggestUpdateEps)
+	// 				r.Put("/delete", UserSuggestDeleteEps)
+
+	// 				r.Post("/review", UserPostReviewEps)
+	// 				r.Put("/review?{eps-review-id}", UpdateReviewEps)
+	// 				r.Post("/report?{eps-review-id}", ReportReviewEps)
+
+	// 				r.Post("/comment", UserPostCommentEps)
+	// 				r.Put("/like", UserLikeCommentEps)
+	// 				r.Delete("comment?{eps-comment-id}", UserDeleteCommentEps)
+	// 				r.Post("/comment?{eps-comment-id}", UserReportCommentEps)
+	// 			})
+	// 		})
+	// 	})
 
 	return r
 }

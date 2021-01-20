@@ -6,15 +6,17 @@ require (
 	github.com/admpub/color v1.7.0 // indirect
 	github.com/admpub/log v0.0.0-20191027043925-a6c03a7421a3
 	github.com/admpub/queueChan v0.0.0-20151001074356-79908f7a499f // indirect
+	github.com/casbin/casbin/v2 v2.20.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/garyburd/redigo v1.6.2 // indirect
 	github.com/go-chi/chi v1.5.1
 	//github.com/friendsofgo/errors v0.9.2 // indirect
 	github.com/go-pg/pg/v10 v10.7.3
 	github.com/gorilla/sessions v1.2.1
-	github.com/labstack/echo v3.3.10+incompatible
+	github.com/mattn/go-colorable v0.1.8 // indirect
+	// github.com/labstack/echo v3.3.10+incompatible
 	// github.com/labstack/echo-contrib v0.9.0 // indirect
-	github.com/labstack/gommon v0.3.0 // indirect
+	// github.com/labstack/gommon v0.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	// github.com/lib/pq v1.9.0
 	// github.com/magiconair/properties v1.8.4 // indirect
