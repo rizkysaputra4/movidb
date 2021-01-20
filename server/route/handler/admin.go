@@ -60,20 +60,27 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 // ChangeAdminLevel handler to promote user into admin
 func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 	admin := &model.UserShortInfo{}
+	newObj := admin
 
 	if err := json.NewDecoder(r.Body).Decode(&admin); err != nil {
 		res.BasicResponse(w, http.StatusBadGateway, "Error when decode request body", err.Error())
 		return
 	}
 	fmt.Println(admin.Role)
-	authStats, err := RoleOrderPermission(w, r, admin, admin.Role)
+	authStatus, err := RoleOrderPermission(w, r, newObj, admin.Role)
+	fmt.Println(authStatus, err)
 
-	if !authStats || err != nil {
-		res.BasicResponse(w, http.StatusUnauthorized, err.Error(), "Unauthorized")
+	if err != nil {
+		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when checking authorization order")
 		return
 	}
 
-	_, err = DB.Model(admin).
+	if !authStatus {
+		res.BasicResponse(w, http.StatusUnauthorized, "Unauthorized", "Peasant cannot promote king")
+		return
+	}
+
+	_, err = DB.Model(&admin).
 		Where("user_id = ?user_id").
 		Column("role").
 		Update()

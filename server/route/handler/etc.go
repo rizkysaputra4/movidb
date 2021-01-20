@@ -64,9 +64,11 @@ func RoleOrderPermission(w http.ResponseWriter, r *http.Request, obj interface{}
 	}
 
 	var objRoleInDB int
+
 	err := db.DB.Model(obj).
 		Where("user_id = ?user_id").
 		Column("role").Select(&objRoleInDB)
+
 	if err != nil {
 		return false, err
 	}
