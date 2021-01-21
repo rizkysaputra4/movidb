@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	mid "github.com/go-chi/chi/middleware"
 	"github.com/rizkysaputra4/moviwiki/server/env"
 	h "github.com/rizkysaputra4/moviwiki/server/route/handler"
 	"github.com/rizkysaputra4/moviwiki/server/route/middleware"
@@ -15,6 +16,7 @@ func InitRoute() {
 	c := env.GetConfiguration()
 
 	r := chi.NewRouter()
+	r.Use(mid.Logger)
 	r.Use(middleware.RoleEnforcer)
 	r.Use(middleware.UpdateJWTExp)
 
@@ -122,9 +124,9 @@ func adminRouter() http.Handler {
 
 	r.Route("/movie", func(r chi.Router) {
 		r.Post("/add-new-movie-type", h.AddNewMovieType)
-		// 	r.Post("/new-movie", AddNewMovie)
+		r.Post("/new-movie", h.AddNewMovieByAdmin)
 		// 	r.Delete("/movie?{movie-id}", DeleteMovie)
-		// 	r.Put("/movie?{movie-id}", AdminApproveUpdateMovie)
+		r.Put("/edit-movie", h.EditMovieData)
 		// 	r.Post("/tag", AdminAddNewMovieTag)
 		// 	r.Put("/tag?{tag-id}", AdminApproveEditTag)
 		// 	r.Post("/genre", AdminAddNewGenre)

@@ -25,9 +25,9 @@ type MovieInformation struct {
 	PosterLink        string  `pg:"poster_link" json:"poster_link"`
 	TrailerLink       string  `pg:"trailer_link" json:"trailer_link"`
 	Duration          string  `pg:"duration" json:"duration"`
-	Awards            string  `pg:"award" json:"award"`
+	Awards            string  `pg:"awards" json:"awards"`
 	TypeID            int     `pg:"type_id" json:"type_id"`
-	CountryID         int     `pg:"country_id" json:"country_id"`
+	CountryID         string  `pg:"country_id" json:"country_id"`
 	Language          string  `pg:"language" json:"language"`
 	UniqueLink        string  `pg:"unique_link" json:"unique_link"`
 	IdentifierID      int     `pg:"identifier_id" json:"identifier_id"`
