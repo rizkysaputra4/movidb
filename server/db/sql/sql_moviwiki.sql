@@ -44,7 +44,7 @@ DROP TABLE IF EXISTS
   notif_list;
 
 CREATE TABLE "user_information" (
-  "user_id" INT NOT NULL,
+  "user_id" INT NOT NULL UNIQUE,
   "user_full_name" VARCHAR(80),
   "birthdate" DATE,
   "signup_date" DATE,
@@ -52,7 +52,9 @@ CREATE TABLE "user_information" (
   "fb_link" VARCHAR(80),
   "twitter_link" VARCHAR(40),
   "ig_link" VARCHAR(50),
-  "sex" BOOLEAN
+  "sex" BOOLEAN,
+  "contributor_points" INT DEFAULT 0,
+  "monthly_contributor_points" INT DEFAULT 0
 );
 
 CREATE TABLE "movie_information" (
@@ -62,6 +64,7 @@ CREATE TABLE "movie_information" (
   "release_date" DATE NOT NULL,
   "imdb_rating" FLOAT(2) NOT NULL,
   "imdb_numb_vote" INT NOT NULL,
+  "metacritics" FLOAT(2),
   "site_rating" FLOAT(2) NOT NULL DEFAULT 0,
   "site_numb_vote" INT NOT NULL DEFAULT 0,
   "poster_link" VARCHAR(255) NOT NULL,
@@ -73,7 +76,12 @@ CREATE TABLE "movie_information" (
   "language" VARCHAR(255),
   "unique_link" VARCHAR(255) NOT NULL,
   "identifier_id" INT DEFAULT 0,
-  "overal_rating" FLOAT(4)
+  "overal_rating" FLOAT(4),
+
+  "popularity" INT DEFAULT 0,
+  "daily_popularity" INT DEFAULT 0,
+  "weekly_popularity" INT DEFAULT 0,
+  "monthly_popularity" INT DEFAULT 0
 );
 
 CREATE TABLE "eps_information" (
@@ -211,7 +219,12 @@ CREATE TABLE "movie_person" (
   "bio" TEXT,
   "birthdate" DATE,
   "role_id" INT NOT NULL,
-  "picture_link" VARCHAR
+  "picture_link" VARCHAR,
+
+  "popularity" INT DEFAULT 0,
+  "daily_popularity" INT DEFAULT 0,
+  "weekly_popularity" INT DEFAULT 0,
+  "monthly_popularity" INT DEFAULT 0
 );
 
 CREATE TABLE "role_list" (

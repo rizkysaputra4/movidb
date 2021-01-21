@@ -1,0 +1,9 @@
+finish all handler
+
+file handler for picture
+
+all the time, monthly, weekly, daily popularity for movie, actress, and people.
+
+add table of blacklisted token in db
+
+finish admin frontend
