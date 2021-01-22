@@ -9,7 +9,7 @@ import (
 	"github.com/casbin/casbin/v2"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/sessions"
-	"github.com/rizkysaputra4/moviwiki/server/comp"
+	c "github.com/rizkysaputra4/moviwiki/server/context"
 	"github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/env"
 )
@@ -21,10 +21,10 @@ func RoleEnforcer(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		claims, errJWT := GetJWTClaims(w, r)
-
+		c := &c.Context{Res: w, Req: r}
 		claimRole := claims["role"]
 		if claimRole == nil && errJWT == nil {
-			comp.BasicResponse(w, http.StatusUnauthorized, "Token claims empty", "")
+			c.SendError(http.StatusUnauthorized, "Token claims empty", "")
 			return
 		}
 
@@ -43,14 +43,14 @@ func RoleEnforcer(next http.Handler) http.Handler {
 		if role < 11 {
 			session, err := db.Store.Get(r, "moviwiki-session")
 			if err != nil {
-				comp.BasicResponse(w, http.StatusUnauthorized, err.Error(), "Session expired")
+				c.SendError(http.StatusUnauthorized, err.Error(), "Session expired")
 				return
 			}
 
 			sessionRole := session.Values["role"]
 			if sessionRole == nil {
 				DeleteJWTFromCookie(w, r)
-				comp.BasicResponse(w, http.StatusUnauthorized, "Session nil", "Role admin but session not found")
+				c.SendError(http.StatusUnauthorized, "Session nil", "Role admin but session not found")
 				return
 			}
 
@@ -67,7 +67,7 @@ func RoleEnforcer(next http.Handler) http.Handler {
 			return
 		}
 
-		comp.BasicResponse(w, http.StatusUnauthorized, "Unauthorized", "Token not found")
+		c.SendError(http.StatusUnauthorized, "Unauthorized", "Token not found")
 		return
 	})
 }
@@ -101,25 +101,26 @@ func StoreSession(w http.ResponseWriter, r *http.Request, userID int, role int) 
 // DeleteSession ...
 func DeleteSession(w http.ResponseWriter, r *http.Request) {
 	session, err := db.Store.Get(r, "moviwiki-session")
-
+	c := &c.Context{Res: w, Req: r}
 	if err != nil {
 		log.Error(err.Error())
 	}
 
 	session.Options.MaxAge = -1
 	if err = sessions.Save(r, w); err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when saving the session")
+		c.SendError(http.StatusInternalServerError, err.Error(), "Error when saving the session")
 	}
 }
 
 //StoreJWT ...
 func StoreJWT(w http.ResponseWriter, r *http.Request, userID int, role int) {
+	c := &c.Context{Res: w, Req: r}
 	token, err := CreateToken(uint64(userID), role)
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when creating JWT")
+		c.SendError(http.StatusInternalServerError, err.Error(), "Error when creating JWT")
 	}
 
-	c := &http.Cookie{
+	cookie := &http.Cookie{
 		Name:     "Auth-Token",
 		Value:    token,
 		HttpOnly: true,
@@ -128,7 +129,7 @@ func StoreJWT(w http.ResponseWriter, r *http.Request, userID int, role int) {
 		Path: "/",
 	}
 	fmt.Println(token)
-	http.SetCookie(w, c)
+	http.SetCookie(w, cookie)
 }
 
 // GetJWTClaims ...
@@ -219,8 +220,9 @@ func DefineAccess(role int, path string, method string) (bool, error) {
 func UpdateSessionExp(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, err := db.Store.Get(r, "moviwiki-session")
+		c := &c.Context{Res: w, Req: r}
 		if err != nil {
-			comp.BasicResponse(w, http.StatusUnauthorized, err.Error(), "error when trying to get session")
+			c.SendError(http.StatusUnauthorized, err.Error(), "error when trying to get session")
 			return
 		}
 
@@ -244,14 +246,6 @@ func UpdateJWTExp(next http.Handler) http.Handler {
 			t.Path = "/"
 			http.SetCookie(w, t)
 		}
-
-		// c := &http.Cookie{
-		// 	Name:     "Auth-Token",
-		// 	HttpOnly: true,
-		// 	Expires:  time.Now().Add(time.Hour * 168),
-		// 	//	Domain:   "localhost",
-		// 	Path: "/",
-		// }
 
 		next.ServeHTTP(w, r)
 	})

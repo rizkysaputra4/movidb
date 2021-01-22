@@ -127,6 +127,8 @@ func adminRouter() http.Handler {
 		r.Post("/new-movie", h.AddNewMovieByAdmin)
 		// 	r.Delete("/movie?{movie-id}", DeleteMovie)
 		r.Put("/edit-movie", h.EditMovieData)
+		r.Post("/new-people-role", h.AddNewRoleListByAdmin)
+		r.Put("/update-people-role", h.UpdateNewRoleListByAdmin)
 		// 	r.Post("/tag", AdminAddNewMovieTag)
 		// 	r.Put("/tag?{tag-id}", AdminApproveEditTag)
 		// 	r.Post("/genre", AdminAddNewGenre)

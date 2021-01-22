@@ -210,7 +210,8 @@ CREATE TABLE "person_in_movie" (
   "person_id" INT NOT NULL,
   "movie_id" INT NOT NULL,
   "eps_id" INT DEFAULT 0,
-  "role_id" INT NOT NULL
+  "role_id" INT NOT NULL,
+  "info" VARCHAR,
 );
 
 CREATE TABLE "movie_person" (
@@ -654,3 +655,27 @@ INSERT INTO identifier (identifier_id, info) VALUES
 (4, 'Hidden'),
 (5, 'Reported'),
 (6, 'Deleted');
+
+INSERT INTO role_list (role_name) VALUES
+('Actress'),
+('Actor'),
+('Director'),
+('Screen Writer'),
+('Producer'),
+('Music'),
+('Cinematography'),
+('Editing'),
+('Casting'),
+('Production Designer'),
+('Art Director'),
+('Set Decoration'),
+('Make Up'),
+('Production Manager'),
+('Assistant Director'),
+('Art / PropMaker'),
+('Sound Mixer'),
+('Special Effect Technician'),
+('Visual Effect'),
+('Stunt'),
+('Animator'),
+('Costume Designer');

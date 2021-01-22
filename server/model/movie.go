@@ -37,3 +37,11 @@ type MovieInformation struct {
 	WeeklyPopularity  int     `pg:"weekly_popularity" json:"weekly_popularity"`
 	DailtyPopularity  int     `pg:"daily_popularity" json:"daily_popularity"`
 }
+
+// MoviePeopleRole contains model for people who work in movie industry
+type MoviePeopleRole struct {
+	tableName struct{} `pg:"role_list"`
+
+	RoleID   int8   `pg:"role_id" json:"role_id"`
+	RoleName string `pg:"role_name" json:"role_name"`
+}

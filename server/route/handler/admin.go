@@ -1,13 +1,11 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/rizkysaputra4/moviwiki/server/comp"
-	res "github.com/rizkysaputra4/moviwiki/server/comp"
+	c "github.com/rizkysaputra4/moviwiki/server/context"
 	"github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/model"
 	"golang.org/x/crypto/bcrypt"
@@ -16,19 +14,19 @@ import (
 // RegisterNewAdmin ...
 func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 	newAdmin := &model.UserShortInfo{}
+	c := &c.Context{Res: w, Req: r, Data: newAdmin}
 
-	if err := json.NewDecoder(r.Body).Decode(&newAdmin); err != nil {
-		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when decode request body")
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
 	if newAdmin.Password == "" || len(newAdmin.Password) < 6 {
-		res.BasicResponse(w, http.StatusBadRequest, "Password too Short, must be 6 character long", "")
+		c.SendError(http.StatusBadRequest, "Password too Short, must be 6 character long", "")
 		return
 	}
 
 	if err := CheckUserName(newAdmin.UserName); err != nil {
-		res.BasicResponse(w, http.StatusBadRequest, err.Error(), "")
+		c.SendError(http.StatusBadRequest, err.Error(), "")
 		return
 	}
 
@@ -39,7 +37,7 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 
 	_, err = db.DB.Model(newAdmin).Insert()
 	if err != nil {
-		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user credential into db")
+		c.ErrorInsertingDataIntoDB(err)
 		return
 	}
 
@@ -50,11 +48,11 @@ func RegisterNewAdmin(w http.ResponseWriter, r *http.Request) {
 
 	_, err = db.DB.Model(completeUserData).Insert()
 	if err != nil {
-		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user data profile to db")
+		c.ErrorInsertingDataIntoDB(err)
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, "OK", newAdmin)
+	c.SendSuccess()
 }
 
 // ChangeAdminLevel handler to promote user into admin
@@ -62,21 +60,21 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 	admin := &model.UserShortInfo{}
 	newObj := admin
 
-	if err := json.NewDecoder(r.Body).Decode(&admin); err != nil {
-		res.BasicResponse(w, http.StatusBadGateway, "Error when decode request body", err.Error())
+	c := &c.Context{Res: w, Req: r, Data: admin}
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
-	fmt.Println(admin.Role)
+
 	authStatus, err := RoleOrderPermission(w, r, newObj, admin.Role)
 	fmt.Println(authStatus, err)
 
 	if err != nil {
-		res.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when checking authorization order")
+		c.SendError(http.StatusInternalServerError, err.Error(), "Error when checking authorization order")
 		return
 	}
 
 	if !authStatus {
-		res.BasicResponse(w, http.StatusUnauthorized, "Unauthorized", "Peasant cannot promote king")
+		c.SendError(http.StatusUnauthorized, "Unauthorized", "Peasant cannot promote king")
 		return
 	}
 
@@ -85,45 +83,45 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 		Column("role").
 		Update()
 	if err != nil {
-		res.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when update data into db")
+		c.SendError(http.StatusBadRequest, err.Error(), "Error when update data into db")
 	}
 
-	res.BasicResponse(w, http.StatusOK, "", admin)
+	c.SendSuccess()
 }
 
 // AddAnotherIdentifier is adding another flag when needed
 func AddAnotherIdentifier(w http.ResponseWriter, r *http.Request) {
 	newIdentifier := &model.Identifier{}
+	c := &c.Context{Res: w, Req: r, Data: newIdentifier}
 
-	if err := json.NewDecoder(r.Body).Decode(newIdentifier); err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when decode request body")
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
 	fmt.Println(newIdentifier)
 
 	if _, err := db.DB.Model(newIdentifier).Insert(); err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting data into db")
+		c.SendError(http.StatusInternalServerError, err.Error(), "Error when inserting data into db")
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, "OK", newIdentifier)
+	c.SendSuccess()
 
 }
 
 // AddNewMovieType is adding new movie type
 func AddNewMovieType(w http.ResponseWriter, r *http.Request) {
 	newMovieType := &model.MovieType{}
+	c := &c.Context{Res: w, Req: r, Data: newMovieType}
 
-	if err := json.NewDecoder(r.Body).Decode(newMovieType); err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when decoding request body")
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
 	if _, err := db.DB.Model(newMovieType).Insert(); err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting data into db")
+		c.ErrorInsertingDataIntoDB(err)
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, "OK", newMovieType)
+	c.SendSuccess()
 }

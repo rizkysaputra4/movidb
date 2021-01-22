@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/rizkysaputra4/moviwiki/server/comp"
+	c "github.com/rizkysaputra4/moviwiki/server/context"
 	"github.com/rizkysaputra4/moviwiki/server/db"
 	"github.com/rizkysaputra4/moviwiki/server/model"
 	"github.com/rizkysaputra4/moviwiki/server/route/middleware"
@@ -15,49 +15,48 @@ import (
 // CheckIfEmailExist ...
 func CheckIfEmailExist(w http.ResponseWriter, r *http.Request) {
 	shortInfo := &model.UserShortInfo{}
-
-	if err := json.NewDecoder(r.Body).Decode(&shortInfo); err != nil || shortInfo.Email == "" {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
+	c := &c.Context{Res: w, Req: r, Data: shortInfo}
+	if err := c.JSONDecoder(); err != nil || shortInfo.Email == "" {
 		return
 	}
 
 	column := "email"
 	if isExist := comp.CheckIfExist(column, shortInfo.Email, shortInfo); isExist {
-		comp.BasicResponse(w, http.StatusBadRequest, "Email is already exist", "")
+		c.SendError(http.StatusBadRequest, "Email is already exist", "")
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, "OK", shortInfo)
+	c.SendSuccess()
 }
 
 // CheckIfUserNameExist ...
 func CheckIfUserNameExist(w http.ResponseWriter, r *http.Request) {
 	shortInfo := &model.UserShortInfo{}
-
-	if err := json.NewDecoder(r.Body).Decode(&shortInfo); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
+	c := &c.Context{Res: w, Req: r, Data: shortInfo}
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
 	if err := CheckUserName(shortInfo.UserName); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "")
+		c.SendError(http.StatusBadRequest, err.Error(), "")
 		return
 	}
 
 	column := "user_name"
 	if isExist := comp.CheckIfExist(column, shortInfo.UserName, shortInfo); isExist {
-		comp.BasicResponse(w, http.StatusBadRequest, "UserName is already exist", "")
+		c.SendError(http.StatusBadRequest, "UserName is already exist", "")
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, "OK", shortInfo)
+	c.SendSuccess()
 }
 
 // CheckIfUserExist ...
 func CheckIfUserExist(w http.ResponseWriter, r *http.Request) {
 	info := &model.UserShortInfo{}
-	if err := json.NewDecoder(r.Body).Decode(&info); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
+	c := &c.Context{Res: w, Req: r, Data: info}
+
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
@@ -68,11 +67,11 @@ func CheckIfUserExist(w http.ResponseWriter, r *http.Request) {
 		Select()
 
 	if err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "User does not exist")
+		c.ErrorGettingDataFromDB(err)
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, "", "User Exist")
+	c.SendSuccess("User Exist")
 }
 
 // Login ...
@@ -86,10 +85,11 @@ type Login struct {
 func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 	pw := &Login{}
 	userInfo := &model.UserShortInfo{}
-	if err := json.NewDecoder(r.Body).Decode(&pw); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
+	c := &c.Context{Res: w, Req: r, Data: pw}
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
+
 	err := db.DB.Model(userInfo).
 		Where("user_name = ?", pw.Username).
 		WhereOr("email = ?", pw.Email).
@@ -97,12 +97,12 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 		Select()
 
 	if err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when selecting user cred from db")
+		c.ErrorGettingDataFromDB(err)
 		return
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(pw.Pw)); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when bcrypting user password")
+		c.SendError(http.StatusBadRequest, err.Error(), "Error when bcrypting user password")
 		return
 	}
 
@@ -114,63 +114,70 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 
 	userInfo.UpdateLastRequest()
 
-	comp.BasicResponse(w, http.StatusOK, "", userInfo)
+	c.SendSuccess()
 }
 
 // LogOut ...
 func LogOut(w http.ResponseWriter, r *http.Request) {
 	middleware.DeleteSession(w, r)
 	middleware.DeleteJWTFromCookie(w, r)
-	comp.BasicResponse(w, http.StatusOK, "", "logout success")
+
+	c := &c.Context{Res: w, Req: r, Data: "Logout success"}
+	c.SendSuccess()
 }
 
 // RegisteringNewUser is handling register request
 func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
+	user := &model.UserShortInfo{}
+	c := &c.Context{
+		Res:  w,
+		Req:  r,
+		Data: user,
+	}
 
-	shortInfo := &model.UserShortInfo{}
-	if err := json.NewDecoder(r.Body).Decode(&shortInfo); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "Error when decode request body")
+	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
-	if shortInfo.Password == "" || len(shortInfo.Password) < 6 {
-		comp.BasicResponse(w, http.StatusBadRequest, "Password too Short, must be 6 character long", "")
+	if user.Password == "" || len(user.Password) < 6 {
+		c.SendError(http.StatusBadRequest, "Password too Short, must be 6 character long", "")
 		return
 	}
 
-	if err := CheckUserName(shortInfo.UserName); err != nil {
-		comp.BasicResponse(w, http.StatusBadRequest, err.Error(), "")
+	if err := CheckUserName(user.UserName); err != nil {
+		c.SendError(http.StatusBadRequest, err.Error(), "")
 		return
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(shortInfo.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 
-	shortInfo.Password = string(hashedPassword)
-	shortInfo.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
+	user.Password = string(hashedPassword)
+	user.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when bcrypting password")
+		c.SendError(http.StatusInternalServerError, err.Error(), "Error when bcrypting password")
 		return
 	}
 
-	_, err = db.DB.Model(shortInfo).
-		Column("user_id", "user_name", "country_id", "password", "email", "last_request").
+	col := []string{"user_id", "user_name", "country_id", "password", "email", "last_request"}
+	_, err = db.DB.Model(c.Data).
+		Column(col...).
 		Insert()
 
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user credential into db")
+		c.ErrorInsertingDataIntoDB(err)
 		return
 	}
 
 	completeUserData := &model.UserInformation{
-		UserID:       shortInfo.UserID,
+		UserID:       user.UserID,
 		RegisterDate: time.Now().UTC().Format("2006-01-02"),
 	}
 
 	_, err = db.DB.Model(completeUserData).Insert()
 	if err != nil {
-		comp.BasicResponse(w, http.StatusInternalServerError, err.Error(), "Error when inserting user profile into db")
+		c.ErrorInsertingDataIntoDB(err)
 		return
 	}
 
-	comp.BasicResponse(w, http.StatusOK, "OK", shortInfo)
+	c.SendSuccess()
 }
