@@ -7,8 +7,8 @@ import (
 	"github.com/rizkysaputra4/moviwiki/server/comp"
 	c "github.com/rizkysaputra4/moviwiki/server/context"
 	"github.com/rizkysaputra4/moviwiki/server/db"
+	"github.com/rizkysaputra4/moviwiki/server/http/middleware"
 	"github.com/rizkysaputra4/moviwiki/server/model"
-	"github.com/rizkysaputra4/moviwiki/server/route/middleware"
 	"golang.org/x/crypto/bcrypt"
 )
 

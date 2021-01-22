@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi"
 	mid "github.com/go-chi/chi/middleware"
 	"github.com/rizkysaputra4/moviwiki/server/env"
-	h "github.com/rizkysaputra4/moviwiki/server/route/handler"
-	"github.com/rizkysaputra4/moviwiki/server/route/middleware"
+	h "github.com/rizkysaputra4/moviwiki/server/http/handler"
+	"github.com/rizkysaputra4/moviwiki/server/http/middleware"
 )
 
 // InitRoute initialize function

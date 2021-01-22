@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rizkysaputra4/moviwiki/server/route"
+	"github.com/rizkysaputra4/moviwiki/server/http/route"
 )
 
 // Init initialize function
