@@ -12,6 +12,28 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// CheckIfUserNameExist ...
+func CheckIfUserNameExist(w http.ResponseWriter, r *http.Request) {
+	shortInfo := &model.UserShortInfo{}
+	c := &c.Context{Res: w, Req: r, Data: shortInfo}
+	if err := c.JSONDecoder(); err != nil {
+		return
+	}
+
+	if err := CheckUserName(shortInfo.UserName); err != nil {
+		c.SendError(http.StatusBadRequest, err.Error(), "")
+		return
+	}
+
+	column := "user_name"
+	if isExist := comp.CheckIfExist(column, shortInfo.UserName, shortInfo); isExist {
+		c.SendError(http.StatusBadRequest, "UserName is already exist", "")
+		return
+	}
+
+	c.SendSuccess()
+}
+
 // CheckIfEmailExist ...
 func CheckIfEmailExist(w http.ResponseWriter, r *http.Request) {
 	shortInfo := &model.UserShortInfo{}
@@ -29,22 +51,56 @@ func CheckIfEmailExist(w http.ResponseWriter, r *http.Request) {
 	c.SendSuccess()
 }
 
-// CheckIfUserNameExist ...
-func CheckIfUserNameExist(w http.ResponseWriter, r *http.Request) {
-	shortInfo := &model.UserShortInfo{}
-	c := &c.Context{Res: w, Req: r, Data: shortInfo}
+// RegisteringNewUser is handling register request
+func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
+	user := &model.UserShortInfo{}
+	c := &c.Context{
+		Res:  w,
+		Req:  r,
+		Data: user,
+	}
+
 	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
-	if err := CheckUserName(shortInfo.UserName); err != nil {
+	if user.Password == "" || len(user.Password) < 6 {
+		c.SendError(http.StatusBadRequest, "Password too Short, must be 6 character long", "")
+		return
+	}
+
+	if err := CheckUserName(user.UserName); err != nil {
 		c.SendError(http.StatusBadRequest, err.Error(), "")
 		return
 	}
 
-	column := "user_name"
-	if isExist := comp.CheckIfExist(column, shortInfo.UserName, shortInfo); isExist {
-		c.SendError(http.StatusBadRequest, "UserName is already exist", "")
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
+	user.Password = string(hashedPassword)
+	user.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
+	if err != nil {
+		c.SendError(http.StatusInternalServerError, err.Error(), "Error when bcrypting password")
+		return
+	}
+
+	col := []string{"user_id", "user_name", "country_id", "password", "email", "last_request"}
+	_, err = db.DB.Model(c.Data).
+		Column(col...).
+		Insert()
+
+	if err != nil {
+		c.ErrorInsertingDataIntoDB(err)
+		return
+	}
+
+	completeUserData := &model.UserInformation{
+		UserID:       user.UserID,
+		RegisterDate: time.Now().UTC().Format("2006-01-02"),
+	}
+
+	_, err = db.DB.Model(completeUserData).Insert()
+	if err != nil {
+		c.ErrorInsertingDataIntoDB(err)
 		return
 	}
 
@@ -123,61 +179,5 @@ func LogOut(w http.ResponseWriter, r *http.Request) {
 	middleware.DeleteJWTFromCookie(w, r)
 
 	c := &c.Context{Res: w, Req: r, Data: "Logout success"}
-	c.SendSuccess()
-}
-
-// RegisteringNewUser is handling register request
-func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
-	user := &model.UserShortInfo{}
-	c := &c.Context{
-		Res:  w,
-		Req:  r,
-		Data: user,
-	}
-
-	if err := c.JSONDecoder(); err != nil {
-		return
-	}
-
-	if user.Password == "" || len(user.Password) < 6 {
-		c.SendError(http.StatusBadRequest, "Password too Short, must be 6 character long", "")
-		return
-	}
-
-	if err := CheckUserName(user.UserName); err != nil {
-		c.SendError(http.StatusBadRequest, err.Error(), "")
-		return
-	}
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-
-	user.Password = string(hashedPassword)
-	user.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
-	if err != nil {
-		c.SendError(http.StatusInternalServerError, err.Error(), "Error when bcrypting password")
-		return
-	}
-
-	col := []string{"user_id", "user_name", "country_id", "password", "email", "last_request"}
-	_, err = db.DB.Model(c.Data).
-		Column(col...).
-		Insert()
-
-	if err != nil {
-		c.ErrorInsertingDataIntoDB(err)
-		return
-	}
-
-	completeUserData := &model.UserInformation{
-		UserID:       user.UserID,
-		RegisterDate: time.Now().UTC().Format("2006-01-02"),
-	}
-
-	_, err = db.DB.Model(completeUserData).Insert()
-	if err != nil {
-		c.ErrorInsertingDataIntoDB(err)
-		return
-	}
-
 	c.SendSuccess()
 }

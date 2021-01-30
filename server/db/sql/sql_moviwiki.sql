@@ -253,7 +253,10 @@ CREATE TABLE "activity_type" (
 CREATE TABLE "movie_character" (
   "movie_id" INT NOT NULL,
   "person_id" INT NOT NULL,
+  "eps_id" INT DEFAULT 0,
   "lead" INT DEFAULT 99,
+  "character" VARCHAR,
+  "info" VARCHAR,
   "picture_link" VARCHAR
 );
 

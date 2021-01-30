@@ -45,3 +45,16 @@ type MoviePeopleRole struct {
 	RoleID   int8   `pg:"role_id" json:"role_id"`
 	RoleName string `pg:"role_name" json:"role_name"`
 }
+
+// MovieCharacter table that contain all character in a movie
+type MovieCharacter struct {
+	tableName struct{} `pg:"movie_character"`
+
+	MovieID     int    `pg:"movie_id" json:"movie_id"`
+	PersonID    int    `pg:"person_id" json:"person_id"`
+	PictureLink string `pg:"picture_link" json:"picture_link"`
+	EpsID       int    `pg:"eps_id" json:"eps_id"`
+	Lead        int    `pg:"lead" json:"lead"`
+	Character   string `pg:"character" json:"character"`
+	Info        string `pg:"info" json:"info"`
+}

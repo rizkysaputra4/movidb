@@ -44,7 +44,7 @@ func (c Context) ErrorGettingDataFromDB(err error) {
 // SendError ...
 func (c Context) SendError(code int, err string, message string) {
 	data := &StatusResponse{
-		Status:  http.StatusOK,
+		Status:  code,
 		Error:   err,
 		Message: message,
 		Data:    "",
