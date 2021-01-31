@@ -1,11 +1,102 @@
 <template>
-  <q-layout>
+  <q-layout id="particles-js">
     <q-page-container>
-      <q-page class="flex flex-center">
+      <q-page class="flex flex-center ">
         <div
           id="particles-js"
           :class="$q.dark.isActive ? 'dark_gradient' : 'normal_gradient'"
-        ></div>
+        >
+          <Particles
+            id="tsparticles"
+            :options="{
+              background: {
+                color: {
+                  value: 'black'
+                }
+              },
+              fpsLimit: 60,
+              interactivity: {
+                detectsOn: 'canvas',
+                events: {
+                  onClick: {
+                    enable: true,
+                    mode: 'push'
+                  },
+                  onHover: {
+                    enable: true,
+                    mode: 'grab'
+                  },
+                  resize: true
+                },
+                modes: {
+                  bubble: {
+                    distance: 400,
+                    duration: 2,
+                    opacity: 0.8,
+                    size: 40
+                  },
+                  grab: {
+                    distance: 150,
+                    links: {
+                      blink: true,
+                      consent: false,
+                      opacity: 0.5
+                    }
+                  },
+                  push: {
+                    quantity: 4
+                  },
+                  repulse: {
+                    distance: 200,
+                    duration: 0.4
+                  }
+                }
+              },
+              particles: {
+                color: {
+                  value: '#ffffff'
+                },
+                links: {
+                  color: '#ffffff',
+                  distance: 150,
+                  enable: true,
+                  opacity: 0.5,
+                  width: 1
+                },
+                collisions: {
+                  enable: true
+                },
+                move: {
+                  direction: 'none',
+                  enable: true,
+                  outMode: 'bounce',
+                  random: false,
+                  speed: 3,
+                  straight: false
+                },
+                number: {
+                  density: {
+                    enable: true,
+                    value_area: 600
+                  },
+                  value: 80
+                },
+                opacity: {
+                  value: 0.5
+                },
+                shape: {
+                  type: 'circle'
+                },
+                size: {
+                  random: true,
+                  value: 5
+                }
+              },
+              detectRetina: true
+            }"
+          />
+        </div>
+
         <q-btn
           color="white"
           class="absolute-top-right"
@@ -14,24 +105,24 @@
           @click="$q.dark.toggle()"
           :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
         />
+
         <q-card
           class="login-form"
           v-bind:style="
             $q.platform.is.mobile ? { width: '80%' } : { width: '30%' }
           "
         >
-          <q-img src="/statics/images/pharmacy.jpg"></q-img>
           <q-card-section>
             <q-avatar
-              size="74px"
               class="absolute"
               style="top: 0;right: 25px;transform: translateY(-50%);"
             >
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
+
             <div class="row no-wrap items-center">
               <div class="col text-h6 ellipsis">
-                Log in to Dashboard
+                MoviWiki Admin Section
               </div>
             </div>
           </q-card-section>
@@ -55,15 +146,6 @@
                   color="primary"
                   @click="loginNotify"
                 />
-
-                <a
-                  style="font-size: 30px;"
-                  class="float-right"
-                  href="https://github.com/sponsors/mayank091193"
-                  target="_blank"
-                  title="Donate"
-                  ><i class="fas fa-heart" style="color: #eb5daa"></i
-                ></a>
               </div>
             </q-form>
           </q-card-section>
@@ -75,139 +157,36 @@
 
 <script type="text/javascript"></script>
 <script>
+import Vue from "vue";
+import Particles from "particles.vue";
+Vue.use(Particles);
 
-
-    export default {
-        data() {
-            return {
-                username: 'admin',
-                password: 'Admin@CRM'
-            }
-        },
-methods: {
-           loginNotify(){
-             this.$q.notify({
-        message: 'Login Successful',
-      })
-           }
-         },
-        mounted() {
-            particlesJS("particles-js", {
-                "particles": {
-                    "number": {
-                        "value": 80,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": "#ffffff"
-                    },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
-                        },
-                        "polygon": {
-                            "nb_sides": 5
-                        },
-                        "image": {
-                            "src": "img/github.svg",
-                            "width": 100,
-                            "height": 100
-                        }
-                    },
-                    "opacity": {
-                        "value": 0.5,
-                        "random": false,
-                        "anim": {
-                            "enable": false,
-                            "speed": 1,
-                            "opacity_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "size": {
-                        "value": 3,
-                        "random": true,
-                        "anim": {
-                            "enable": false,
-                            "speed": 40,
-                            "size_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#ffffff",
-                        "opacity": 0.4,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 6,
-                        "direction": "none",
-                        "random": false,
-                        "straight": false,
-                        "out_mode": "out",
-                        "bounce": false,
-                        "attract": {
-                            "enable": false,
-                            "rotateX": 600,
-                            "rotateY": 1200
-                        }
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "grab"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 140,
-                            "line_linked": {
-                                "opacity": 1
-                            }
-                        },
-                        "bubble": {
-                            "distance": 400,
-                            "size": 40,
-                            "duration": 2,
-                            "opacity": 8,
-                            "speed": 3
-                        },
-                        "repulse": {
-                            "distance": 200,
-                            "duration": 0.4
-                        },
-                        "push": {
-                            "particles_nb": 4
-                        },
-                        "remove": {
-                            "particles_nb": 2
-                        }
-                    }
-                },
-                "retina_detect": true
-            });
-        }
+export default {
+  data() {
+    return {
+      username: "admin",
+      password: "Admin@CRM"
+    };
+  },
+  methods: {
+    loginNotify() {
+      this.$q.notify({
+        message: "Login Successful"
+      });
     }
+  },
+  meta() {
+    return {
+      title: "MoviWiki Admin"
+    };
+  },
+  mounted() {}
+};
 </script>
 
 <style>
-#particles-js {
+#particles-js,
+#tsparticles {
   position: absolute;
   width: 100%;
   height: 100%;

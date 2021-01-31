@@ -1,12 +1,13 @@
 <template>
   <q-layout
-    view="lHh LpR lFf"
+    view="hHh lpR fFf"
     :class="
       $q.dark.isActive ? 'header_dark bg-grey-9' : 'header_normal bg-grey-3'
     "
   >
     <q-header
       reveal
+      elevated
       :class="
         $q.dark.isActive
           ? 'header_dark bg-blue-grey-10'
@@ -26,15 +27,19 @@
         <!--            <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">-->
         <!--          </q-avatar>-->
 
-        <q-toolbar-title>CRM Admin</q-toolbar-title>
+        <q-toolbar-title>Moviwiki Admin</q-toolbar-title>
         <q-btn
           class="q-mr-xs"
           flat
           round
           @click="$q.dark.toggle()"
           :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-        />
-        <q-btn flat round dense icon="search" class="q-mr-xs" />
+        >
+          <q-tooltip>Day/Night mode</q-tooltip>
+        </q-btn>
+        <q-btn flat round dense icon="search" class="q-mr-xs"
+          ><q-tooltip>Search</q-tooltip></q-btn
+        >
         <q-btn
           flat
           round
@@ -43,30 +48,27 @@
           @click="logoutNotify"
           to="/"
         />
+
+        <q-btn round flat>
+          <q-avatar size="26px">
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+          </q-avatar>
+          <q-tooltip>Account</q-tooltip>
+        </q-btn>
       </q-toolbar>
     </q-header>
     <q-drawer
-      class="left-navigation text-white"
+      class="left-navigation text-white bg-black"
       show-if-above
       v-model="left"
-      style="background-image: url(https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg) !important;"
       side="left"
-      elevated
     >
       <div
         class="full-height"
-        :class="$q.dark.isActive ? 'drawer_dark' : 'drawer_normal'"
+        :class="$q.dark.isActive ? 'drawer_dark bg-grey-10' : 'drawer_normal'"
       >
-        <div style="height: calc(100% - 117px);padding:10px;">
-          <q-toolbar>
-            <q-avatar>
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-
-            <q-toolbar-title>Mayank Patel</q-toolbar-title>
-          </q-toolbar>
-          <hr />
-          <q-scroll-area style="height:100%;">
+        <div style="height: calc(100% - 20px); padding: 10px">
+          <q-scroll-area style="height: 100%">
             <q-list padding>
               <q-item
                 active-class="tab-active"
@@ -80,9 +82,7 @@
                   <q-icon name="dashboard" />
                 </q-item-section>
 
-                <q-item-section>
-                  Dashboard v1
-                </q-item-section>
+                <q-item-section> Dashboard v1 </q-item-section>
               </q-item>
 
               <q-item
@@ -97,9 +97,7 @@
                   <q-icon name="dashboard" />
                 </q-item-section>
 
-                <q-item-section>
-                  Dashboard v2
-                </q-item-section>
+                <q-item-section> Dashboard v2 </q-item-section>
               </q-item>
 
               <q-item
@@ -114,9 +112,7 @@
                   <q-icon name="dashboard" />
                 </q-item-section>
 
-                <q-item-section>
-                  Dashboard v3
-                </q-item-section>
+                <q-item-section> Dashboard v3 </q-item-section>
               </q-item>
 
               <q-item
@@ -130,9 +126,7 @@
                   <q-icon name="star" />
                 </q-item-section>
 
-                <q-item-section>
-                  Customer Management
-                </q-item-section>
+                <q-item-section> Customer Management </q-item-section>
               </q-item>
 
               <q-item
@@ -146,9 +140,7 @@
                   <q-icon name="send" />
                 </q-item-section>
 
-                <q-item-section>
-                  Change Request
-                </q-item-section>
+                <q-item-section> Change Request </q-item-section>
               </q-item>
 
               <q-item
@@ -162,9 +154,7 @@
                   <q-icon name="attach_money" />
                 </q-item-section>
 
-                <q-item-section>
-                  Sales Invoices
-                </q-item-section>
+                <q-item-section> Sales Invoices </q-item-section>
               </q-item>
 
               <q-item
@@ -178,9 +168,7 @@
                   <q-icon name="money" />
                 </q-item-section>
 
-                <q-item-section>
-                  Quotes
-                </q-item-section>
+                <q-item-section> Quotes </q-item-section>
               </q-item>
 
               <q-item
@@ -194,9 +182,7 @@
                   <q-icon name="assignment" />
                 </q-item-section>
 
-                <q-item-section>
-                  Transactions
-                </q-item-section>
+                <q-item-section> Transactions </q-item-section>
               </q-item>
 
               <q-item
@@ -210,9 +196,7 @@
                   <q-icon name="list" />
                 </q-item-section>
 
-                <q-item-section>
-                  Employee Salary List
-                </q-item-section>
+                <q-item-section> Employee Salary List </q-item-section>
               </q-item>
 
               <q-item
@@ -226,9 +210,7 @@
                   <q-icon name="calendar_today" />
                 </q-item-section>
 
-                <q-item-section>
-                  Calendar
-                </q-item-section>
+                <q-item-section> Calendar </q-item-section>
               </q-item>
 
               <q-item
@@ -242,9 +224,7 @@
                   <q-icon name="business" />
                 </q-item-section>
 
-                <q-item-section>
-                  Department
-                </q-item-section>
+                <q-item-section> Department </q-item-section>
               </q-item>
 
               <q-item
@@ -258,9 +238,7 @@
                   <q-icon name="drafts" />
                 </q-item-section>
 
-                <q-item-section>
-                  My Profile
-                </q-item-section>
+                <q-item-section> My Profile </q-item-section>
               </q-item>
             </q-list>
           </q-scroll-area>
@@ -286,16 +264,16 @@
 export default {
   data() {
     return {
-      left: false
+      left: false,
     };
   },
   methods: {
     logoutNotify() {
       this.$q.notify({
-        message: "Logged out"
+        message: "Logged out",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
