@@ -1,8 +1,8 @@
 {
-  "name": "moviwiki-ui",
+  "name": "admin-moviwiki",
   "version": "0.0.1",
   "description": "A Quasar Framework app",
-  "productName": "moviwiki-ui",
+  "productName": "Moviwiki Admin Section",
   "author": "Rizky <rizkysaputra000@gmail.com>",
   "private": true,
   "scripts": {

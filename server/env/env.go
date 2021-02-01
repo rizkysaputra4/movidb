@@ -26,6 +26,8 @@ type Configuration struct {
 	SessionKey string `env:"session_key" default:"moviwiki"`
 
 	TokenKey string `env:"session_key" default:"moviwiki"`
+
+	Domain string `env:"domain" default:"localhost"`
 }
 
 var serviceConfig Configuration

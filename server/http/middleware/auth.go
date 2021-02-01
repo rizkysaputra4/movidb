@@ -26,7 +26,7 @@ func StoreJWT(w http.ResponseWriter, r *http.Request, userID int, role int) {
 		Value:    token,
 		HttpOnly: true,
 		Expires:  time.Now().Add(time.Hour * 168),
-		//	Domain:   "localhost",
+		//Domain:   "localhost",
 		Path: "/",
 	}
 	fmt.Println(token)
