@@ -97,3 +97,4 @@ func DefineAccess(role int, path string, method string) (bool, error) {
 
 	return false, nil
 }
+

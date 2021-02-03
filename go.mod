@@ -31,7 +31,7 @@ require (
 	// github.com/volatiletech/inflect v0.0.1 // indirect
 	// github.com/volatiletech/sqlboiler v3.7.1+incompatible
 	// github.com/volatiletech/sqlboiler/v4 v4.4.0
-	golang.org/x/sys v0.0.0-20201231184435-2d18734c6014 // indirect
+	golang.org/x/sys v0.0.0-20201231184435-2d18734c6014
 	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/boj/redistore.v1 v1.0.0-20160128113310-fc113767cd6b

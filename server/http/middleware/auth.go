@@ -81,13 +81,11 @@ func UpdateSessionExp(next http.Handler) http.Handler {
 // UpdateJWTExp ...
 func UpdateJWTExp(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		t, err := r.Cookie("Auth-Token")
-		if err == nil {
-			t.Expires = time.Now().Add(time.Hour * 168)
-			t.HttpOnly = true
-			t.Path = "/"
-			http.SetCookie(w, t)
+		var duration int64 = 86400 // seconds or a day
+		claims, err := GetJWTClaims(w, r)
+		
+		if err == nil && time.Now().Unix() - int64(claims["time_created"].(float64)) > duration {
+			StoreJWT(w, r, int(claims["user_id"].(float64)), int(claims["role"].(float64)))
 		}
 
 		next.ServeHTTP(w, r)
@@ -152,6 +150,7 @@ func CreateToken(userid uint64, role int) (string, error) {
 	atClaims["authorized"] = true
 	atClaims["user_id"] = userid
 	atClaims["role"] = role
+	atClaims["time_created"] = time.Now().Unix()
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(env.TokenKey))
