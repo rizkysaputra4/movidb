@@ -80,10 +80,11 @@
 import Vue from "vue";
 import Particles from "particles.vue";
 import axios from "axios";
-const { server } = require("../config");
+
 Vue.use(Particles);
 
 export default {
+  name: "Login",
   data() {
     return {
       username: null,
@@ -145,20 +146,20 @@ export default {
             width: 1,
           },
           collisions: {
-            enable: true,
+            enable: false,
           },
           move: {
             direction: "none",
             enable: true,
             outMode: "bounce",
-            random: false,
+            random: true,
             speed: 3,
             straight: false,
           },
           number: {
             density: {
               enable: true,
-              value_area: 600,
+              value_area: 1500,
             },
             value: 80,
           },
@@ -202,8 +203,11 @@ export default {
         user_name: this.username,
         password: this.password,
       };
+
       axios
-        .post(`${server}/auth/login-password`, data, { withCredentials: true })
+        .post(`${process.env.API}/auth/login-password`, data, {
+          withCredentials: true,
+        })
         .then((res) => {
           console.log(res.data);
           if (res.data.status !== 200) {

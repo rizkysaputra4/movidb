@@ -1,10 +1,17 @@
+import Index from "pages/Index.vue";
+import Login from "pages/Login.vue";
+import Dashboard from "pages/Dashboard.vue";
+
 const routes = [
-  { path: "/", component: () => import("pages/login.vue") },
+  { path: "/login", component: Login },
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/Index.vue") }],
-    children: [{ path: "", component: () => import("pages/dashboard.vue") }],
+    children: [
+      { path: "/indexc", component: Index },
+      { path: "/dashboard", component: Dashboard },
+    ],
+    meta: { requiresAuth: true },
   },
 
   // Always leave this as last one,
