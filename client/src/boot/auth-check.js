@@ -8,21 +8,17 @@ export default ({ router, ssrContext, redirect }) => {
   const cookies = process.env.SERVER ? Cookies.parseSSR(ssrContext) : Cookies;
   const token = cookies.get("Auth-Token");
   const salt = process.env.SALT;
-  let auth;
 
-  router.beforeEach((to, next) => {
-    console.log(token);
-    jwt.verify(token, salt, (err, decoded) => {
-      auth = err ? false : true;
-    });
-
+  router.beforeEach((to, from, next) => {
     if (to.matched.some((record) => record.meta.requiresAuth)) {
-      console.log(auth);
-      if (!auth) {
-        redirect("/login");
-      } else {
-        next();
-      }
+      jwt.verify(token, salt, (err, decoded) => {
+        console.log(decoded);
+        if (err || decoded.role > 11) {
+          redirect("/login");
+        } else {
+          next();
+        }
+      });
     } else {
       next();
     }

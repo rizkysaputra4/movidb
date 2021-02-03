@@ -280,7 +280,6 @@ export default {
 <style>
 .q-drawer {
   /*background-image: url(https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg) !important;*/
-  background-image: url("/statics/images/lake.jpg") !important;
   background-size: cover !important;
 }
 
