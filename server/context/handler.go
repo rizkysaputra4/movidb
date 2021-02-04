@@ -57,16 +57,17 @@ func (c Context) SendError(code int, err string, message string) {
 }
 
 // SendSuccess ...
-func (c Context) SendSuccess(message ...string) {
+func (c Context) SendSuccess(message ...interface{}) {
 	data := &StatusResponse{
-		Status:  http.StatusOK,
-		Error:   "OK",
-		Message: message,
-		Data:    c.Data,
+		Status: http.StatusOK,
+		Error:  "OK",
+		Data:   message,
 	}
 
 	if len(message) > 0 {
-		data.Data = ""
+		data.Data = message
+	} else {
+		data.Data = c.Data
 	}
 
 	response, _ := json.Marshal(data)

@@ -87,17 +87,17 @@
 
               <q-item
                 active-class="tab-active"
-                to="/dashboard_v2"
+                to="/admin_list"
                 exact
-                class="q-ma-sm navigation-item"
+                class="q-ma-sm perm_identity"
                 clickable
                 v-ripple
               >
                 <q-item-section avatar>
-                  <q-icon name="dashboard" />
+                  <q-icon name="perm_identity" />
                 </q-item-section>
 
-                <q-item-section> Dashboard v2 </q-item-section>
+                <q-item-section> Admin List </q-item-section>
               </q-item>
 
               <q-item

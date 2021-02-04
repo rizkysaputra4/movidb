@@ -29,7 +29,7 @@ func StoreJWT(w http.ResponseWriter, r *http.Request, userID int, role int) {
 		//Domain:   "localhost",
 		Path: "/",
 	}
-	fmt.Println(token)
+
 	http.SetCookie(w, cookie)
 }
 
@@ -83,8 +83,8 @@ func UpdateJWTExp(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var duration int64 = 86400 // seconds or a day
 		claims, err := GetJWTClaims(w, r)
-		
-		if err == nil && time.Now().Unix() - int64(claims["time_created"].(float64)) > duration {
+
+		if err == nil && time.Now().Unix()-int64(claims["time_created"].(float64)) > duration {
 			StoreJWT(w, r, int(claims["user_id"].(float64)), int(claims["role"].(float64)))
 		}
 

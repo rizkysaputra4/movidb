@@ -6,8 +6,10 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/go-chi/chi"
 	c "github.com/rizkysaputra4/moviwiki/server/context"
 	"github.com/rizkysaputra4/moviwiki/server/db"
+	"github.com/rizkysaputra4/moviwiki/server/http/middleware"
 	"github.com/rizkysaputra4/moviwiki/server/model"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -52,12 +54,26 @@ func UpdateFullUserInfo(w http.ResponseWriter, r *http.Request) {
 
 	userProfile := &model.UserInformation{}
 	c := &c.Context{Res: w, Req: r, Data: userProfile}
-	if err := c.JSONDecoder(); err != nil {
+	// if err := c.JSONDecoder(); err != nil {
+	// 	return
+	// }
+	userProfile.UserFullName = "boymens cool"
+
+	userID := chi.URLParam(r, "user-id")
+
+	claims, err := middleware.GetJWTClaims(w, r)
+	if err != nil {
+		c.SendError(http.StatusInternalServerError, err.Error(), "")
 		return
 	}
 
-	_, err := db.DB.Model(userProfile).
-		Where("user_id = ?user_id").
+	if fmt.Sprint(claims["user_id"].(float64)) != (userID) {
+		c.SendError(http.StatusUnauthorized, "", "Cannot modify someone else data")
+		return
+	}
+
+	_, err = db.DB.Model(userProfile).
+		Where("user_id = ?", userID).
 		Column("user_full_name", "birthdate", "bio", "fb_link", "twitter_link", "ig_link", "sex").
 		Update()
 	if err != nil {

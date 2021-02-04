@@ -19,15 +19,15 @@ func InitRoute() {
 	r := chi.NewRouter()
 
 	r.Use(cors.Handler(cors.Options{
-    // AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
-    AllowedOrigins:   []string{"http://localhost:4000"},
-    // AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-    AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-    AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-    ExposedHeaders:   []string{"Link"},
-    AllowCredentials: true,
-    MaxAge:           300, // Maximum value not ignored by any of major browsers
-  }))
+		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"http://localhost:4000"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	r.Use(mid.Logger)
 	r.Use(middleware.RoleEnforcer)
@@ -36,16 +36,16 @@ func InitRoute() {
 	r.Route("/auth", func(r chi.Router) {
 		r.Get("/register-username", h.CheckIfUserNameExist) // Check if username already exist
 		r.Get("/register-email", h.CheckIfEmailExist)       // Check if email already exist
-		r.Get("/register", h.RegisteringNewUser)           // Register new user
+		r.Get("/register", h.RegisteringNewUser)            // Register new user
 		r.Get("/login-username", h.CheckIfUserExist)        // Check if user exist using username or email when login
-		r.Post("/login-password", h.CheckIfPasswordMatch)    // Match the username or email with password
+		r.Post("/login-password", h.CheckIfPasswordMatch)   // Match the username or email with password
 		r.Get("/logout", h.LogOut)
 	})
 
 	r.Mount("/admin", adminRouter())
 
 	r.Route("/user", func(r chi.Router) {
-		// 	r.Put("/id?{user-id}", UpdateFullUserInfo) // Update user profile
+		r.Put("/{user-id}", h.UpdateFullUserInfo) // Update user profile
 		// 	r.Get("/id?{user-id}", GetUserCredential) // Get user credential
 		// 	r.Delete("/id?{user-id}", DeleteUser)
 		r.Put("/uid", h.UpdateUserShortInfo) // Update user login credentials
@@ -133,6 +133,7 @@ func adminRouter() http.Handler {
 	r.Post("/register-new-admin", h.RegisterNewAdmin) // register new admin
 	r.Put("/admin-level", h.ChangeAdminLevel)         // Promote regular user to admin
 	r.Post("/new-identifier", h.AddAnotherIdentifier)
+	r.Get("/admin-list", h.GetAdminList)
 	// r.Put("/update-admin", UpdateAdminLevel) // Update the admin level
 
 	r.Route("/movie", func(r chi.Router) {
