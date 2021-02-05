@@ -65,7 +65,8 @@ axios
   .then((res) => {
     data = res.data.data[0];
     data.map((admin) => {
-      var lastRequest = Date.parse(admin.last_request) - Date.now;
+      var lastRequest =
+        Date.now() / 1000 - Date.parse(admin.last_request + " GMT") / 1000;
       admin.isOnline = lastRequest < 60 ? true : false;
     });
     console.log(data);

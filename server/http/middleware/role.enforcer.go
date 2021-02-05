@@ -58,6 +58,11 @@ func RoleEnforcer(next http.Handler) http.Handler {
 		fmt.Println("Casbin access; ", access, err)
 
 		if access {
+
+			if role < 25 {
+				UpdateLastRequest(int(uid.(float64)))
+			}
+
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -97,4 +102,3 @@ func DefineAccess(role int, path string, method string) (bool, error) {
 
 	return false, nil
 }
-
