@@ -15,6 +15,7 @@ const (
 // Configuration variable
 type Configuration struct {
 	DBPort           string `env:"port" default:"5342"`
+	DBHost           string `env:"db_host" default:"localhost"`
 	PostgresPass     string `env:"postgres_pass" default:"postgres"`
 	PostgresUserName string `env:"postgres_username" default:"postgres"`
 	PostgresDB       string `env:"postgres_db" default:"moviwiki"`

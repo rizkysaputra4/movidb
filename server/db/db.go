@@ -25,5 +25,5 @@ func init() {
 		Database: c.PostgresDB,
 	})
 
-	fmt.Println("DB INIT ...")
+	fmt.Println("DB connected!")
 }

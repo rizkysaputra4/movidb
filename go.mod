@@ -14,6 +14,7 @@ require (
 	//github.com/friendsofgo/errors v0.9.2 // indirect
 	github.com/go-pg/pg/v10 v10.7.3
 	github.com/gorilla/sessions v1.2.1
+	github.com/lib/pq v1.9.0
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	// github.com/labstack/echo v3.3.10+incompatible
 	// github.com/labstack/echo-contrib v0.9.0 // indirect

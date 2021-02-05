@@ -12,8 +12,6 @@ export default ({ router, ssrContext, redirect }) => {
   router.beforeEach((to, from, next) => {
     if (to.matched.some((record) => record.meta.requiresAuth)) {
       jwt.verify(token, salt, (err, decoded) => {
-        console.log(decoded);
-        console.log(token);
         if (err || decoded.role > 11) {
           redirect("/login");
         } else {

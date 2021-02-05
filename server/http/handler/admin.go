@@ -112,18 +112,43 @@ func AddAnotherIdentifier(w http.ResponseWriter, r *http.Request) {
 
 // GetAdminList ...
 func GetAdminList(w http.ResponseWriter, r *http.Request) {
-	var admins []model.UserShortInfo
+
 	c := &c.Context{Res: w, Req: r}
 
-	if err := db.DB.Model(&admins).
-		Relation("User").Column("user_name", "email", "role", "last_request").
-		Where("role < 21").
-		Select(); err != nil {
+	type usersFull struct {
+		model.UserShortInfo
+		model.UserInformation
+	}
+
+	var users []usersFull
+	_, err := db.DB.Query(&users,
+		`select  
+			user_short_info.user_id, 
+			user_name,
+			user_full_name,
+			country_id, 
+			email,
+			sex,
+			role, 
+			last_request, 
+			ig_link, 
+			fb_link, 
+			monthly_contributor_points
+		from 
+			user_short_info 
+		inner join 
+			user_information 
+		on 
+			user_short_info.user_id = user_information.user_id
+		where 
+			role < 21`)
+
+	if err != nil {
 		c.ErrorGettingDataFromDB(err)
 		return
 	}
 
-	c.SendSuccess(admins)
+	c.SendSuccess(users)
 }
 
 // RoleOrderPermission ...
