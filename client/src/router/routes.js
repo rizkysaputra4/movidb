@@ -1,17 +1,12 @@
-import Index from "pages/Index.vue";
-import Login from "pages/Login.vue";
-import Dashboard from "pages/Dashboard.vue";
-import AdminList from "pages/Admin-list";
-
 const routes = [
-  { path: "/login", component: Login },
+  { path: "/login", component: () => import("pages/Login.vue") },
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      { path: "/indexc", component: Index },
-      { path: "/dashboard", component: Dashboard },
-      { path: "/admin_list", component: AdminList },
+      { path: "/indexc", component: () => import("pages/Index.vue") },
+      { path: "/dashboard", component: () => import("pages/Dashboard.vue") },
+      { path: "/admin_list", component: () => import("pages/Admin-list.vue") },
     ],
     meta: { requiresAuth: true },
   },

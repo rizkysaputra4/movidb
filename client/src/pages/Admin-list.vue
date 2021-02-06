@@ -60,13 +60,6 @@
 const axios = require("axios");
 var data = [];
 
-axios
-  .get(`${process.env.API}/admin/admin-list`, { withCredentials: true })
-  .then((res) => {
-    data = res.data.data[0];
-    console.log();
-  });
-
 export default {
   data() {
     return {
@@ -117,6 +110,14 @@ export default {
       }
       return 9;
     },
+  },
+  beforeMount() {
+    axios
+      .get(`${process.env.API}/admin/admin-list`, { withCredentials: true })
+      .then((res) => {
+        this.data = res.data.data[0];
+      })
+      .catch((err) => console.log(err));
   },
 };
 </script>
