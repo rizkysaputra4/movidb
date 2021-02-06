@@ -110,17 +110,24 @@ func AddAnotherIdentifier(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// UserFull combine usershortinfo and userinformation
+type UserFull struct {
+	model.UserShortInfo
+	model.UserInformation
+	IsOnline string `json:"is_online"`
+}
+
+func (u *UserFull) addIsOnline(time string) {
+	u.IsOnline = time
+}
+
 // GetAdminList ...
 func GetAdminList(w http.ResponseWriter, r *http.Request) {
 
 	c := &c.Context{Res: w, Req: r}
 
-	type usersFull struct {
-		model.UserShortInfo
-		model.UserInformation
-	}
+	var users []UserFull
 
-	var users []usersFull
 	_, err := db.DB.Query(&users,
 		`select  
 			user_short_info.user_id, 
@@ -146,6 +153,35 @@ func GetAdminList(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		c.ErrorGettingDataFromDB(err)
 		return
+	}
+
+	for i := range users {
+		lastReq, err := time.Parse("2006-01-02 15:04:05", users[i].LastRequest)
+
+		if err != nil {
+			c.SendError(http.StatusBadRequest, err.Error(), "error when parsing time")
+			return
+		}
+
+		fromLastRequest := time.Now().Sub(lastReq)
+
+		switch {
+		case fromLastRequest < time.Minute:
+			users[i].addIsOnline("online")
+		case fromLastRequest > (time.Hour * 730): // 730 hours == 1 month
+			users[i].addIsOnline(fmt.Sprint(users[i].LastRequest))
+		case fromLastRequest > (time.Hour * 48):
+			users[i].addIsOnline(fmt.Sprint(int(fromLastRequest/(time.Hour*24))) + " days ago")
+		case fromLastRequest > (time.Hour * 24):
+			users[i].addIsOnline("Yesterday")
+		case fromLastRequest > (time.Hour):
+			users[i].addIsOnline(fmt.Sprint(int(fromLastRequest.Hours())) + " hours ago")
+		case fromLastRequest < time.Minute*2:
+			users[i].addIsOnline("One minute ago")
+		case fromLastRequest < time.Hour:
+			users[i].addIsOnline(fmt.Sprint(int(fromLastRequest.Minutes())) + " minutes ago")
+		}
+
 	}
 
 	c.SendSuccess(users)

@@ -34,7 +34,7 @@
                 <div class="row">
                   <div class="col">{{ props.row.country_id }}</div>
                   <div class="col">{{ props.row.user_name }}</div>
-                  <div class="col">{{ props.row.isOnline }}</div>
+                  <div class="col">{{ props.row.is_online }}</div>
                   <div class="col">.col</div>
                 </div>
               </q-card-section>
@@ -64,12 +64,7 @@ axios
   .get(`${process.env.API}/admin/admin-list`, { withCredentials: true })
   .then((res) => {
     data = res.data.data[0];
-    data.map((admin) => {
-      var lastRequest =
-        Date.now() / 1000 - Date.parse(admin.last_request + " GMT") / 1000;
-      admin.isOnline = lastRequest < 60 ? true : false;
-    });
-    console.log(data);
+    console.log();
   });
 
 export default {

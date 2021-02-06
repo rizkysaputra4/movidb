@@ -67,25 +67,31 @@
         class="full-height"
         :class="$q.dark.isActive ? 'drawer_dark bg-grey-10' : 'drawer_normal'"
       >
-        <div style="height: calc(100% - 20px); padding: 10px">
+        <div style="height: calc(100% - 20px)">
           <q-scroll-area style="height: 100%">
-            <q-list padding>
-              <q-item
-                active-class="tab-active"
-                to="/dashboard"
-                exact
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="dashboard" />
-                </q-item-section>
+            <q-item
+              active-class="tab-active"
+              to="/dashboard"
+              exact
+              class="q-ma-sm navigation-item"
+              clickable
+              v-ripple
+            >
+              <q-item-section avatar>
+                <q-icon name="dashboard" />
+              </q-item-section>
 
-                <q-item-section> Dashboard v1 </q-item-section>
-              </q-item>
+              <q-item-section> Dashboard v1 </q-item-section>
+            </q-item>
 
+            <q-expansion-item
+              expand-separator
+              icon="attribution"
+              label="Admin"
+              style="padding-left: 10px; padding-right: 10px"
+            >
               <q-item
+                :header-inset-level="1"
                 active-class="tab-active"
                 to="/admin_list"
                 exact
@@ -94,153 +100,49 @@
                 v-ripple
               >
                 <q-item-section avatar>
-                  <q-icon name="perm_identity" />
+                  <q-icon name="person_search" />
                 </q-item-section>
 
                 <q-item-section> Admin List </q-item-section>
               </q-item>
+            </q-expansion-item>
 
+            <q-expansion-item
+              expand-separator
+              icon="attribution"
+              label="User"
+              style="padding-left: 10px; padding-right: 10px"
+            >
               <q-item
+                :header-inset-level="1"
                 active-class="tab-active"
-                to="/dashboard_v3"
+                to="/admin_list"
                 exact
-                class="q-ma-sm navigation-item"
+                class="q-ma-sm perm_identity"
                 clickable
                 v-ripple
               >
                 <q-item-section avatar>
-                  <q-icon name="dashboard" />
+                  <q-icon name="person_search" />
                 </q-item-section>
 
-                <q-item-section> Dashboard v3 </q-item-section>
+                <q-item-section> Admin List </q-item-section>
               </q-item>
+            </q-expansion-item>
 
-              <q-item
-                active-class="tab-active"
-                to="/customer_management"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="star" />
-                </q-item-section>
+            <q-item
+              active-class="tab-active"
+              to="/my_profile"
+              class="q-ma-sm navigation-item"
+              clickable
+              v-ripple
+            >
+              <q-item-section avatar>
+                <q-icon name="contact_page" />
+              </q-item-section>
 
-                <q-item-section> Customer Management </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/change_request"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="send" />
-                </q-item-section>
-
-                <q-item-section> Change Request </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/sales_invoices"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="attach_money" />
-                </q-item-section>
-
-                <q-item-section> Sales Invoices </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/quotes"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="money" />
-                </q-item-section>
-
-                <q-item-section> Quotes </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/transactions"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="assignment" />
-                </q-item-section>
-
-                <q-item-section> Transactions </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/employee_salary_list"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="list" />
-                </q-item-section>
-
-                <q-item-section> Employee Salary List </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/calendar"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="calendar_today" />
-                </q-item-section>
-
-                <q-item-section> Calendar </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/department"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="business" />
-                </q-item-section>
-
-                <q-item-section> Department </q-item-section>
-              </q-item>
-
-              <q-item
-                active-class="tab-active"
-                to="/my_profile"
-                class="q-ma-sm navigation-item"
-                clickable
-                v-ripple
-              >
-                <q-item-section avatar>
-                  <q-icon name="drafts" />
-                </q-item-section>
-
-                <q-item-section> My Profile </q-item-section>
-              </q-item>
-            </q-list>
+              <q-item-section> My Profile </q-item-section>
+            </q-item>
           </q-scroll-area>
         </div>
       </div>
