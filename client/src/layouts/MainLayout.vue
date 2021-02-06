@@ -105,6 +105,22 @@
 
                 <q-item-section> Admin List </q-item-section>
               </q-item>
+
+              <q-item
+                :header-inset-level="1"
+                active-class="tab-active"
+                to="/admin_promote"
+                exact
+                class="q-ma-sm perm_identity"
+                clickable
+                v-ripple
+              >
+                <q-item-section avatar>
+                  <q-icon name="person_search" />
+                </q-item-section>
+
+                <q-item-section> Promote </q-item-section>
+              </q-item>
             </q-expansion-item>
 
             <q-expansion-item

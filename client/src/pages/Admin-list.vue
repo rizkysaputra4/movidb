@@ -68,7 +68,13 @@ export default {
         page: 1,
         rowsPerPage: this.getItemsPerPage(),
       },
-      columns: [],
+      columns: [
+        { name: "country_id", label: "Country", field: "country_id" },
+        { name: "user_name", label: "UserName", field: "user_name" },
+        { name: "is_online", label: "Online", field: "is_online" },
+        { name: "user_full_name", label: "Name", field: "user_full_name" },
+        { name: "role", label: "Role", field: "role" },
+      ],
       data,
     };
   },
