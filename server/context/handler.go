@@ -47,7 +47,6 @@ func (c Context) SendError(code int, err string, message string) {
 		Status:  code,
 		Error:   err,
 		Message: message,
-		Data:    "",
 	}
 
 	response, _ := json.Marshal(data)

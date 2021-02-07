@@ -240,9 +240,14 @@ func SearchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resData := &SendSearchResult{SearchResult: users, Count: users[0].Count}
+	if users == nil {
+		c.SendError(http.StatusNotFound, "Not Found", "UserName Not Found")
+		return
+	}
 
+	resData := &SendSearchResult{SearchResult: users, Count: users[0].Count}
 	c.SendSuccess(resData)
+
 }
 
 // RoleOrderPermission ...
