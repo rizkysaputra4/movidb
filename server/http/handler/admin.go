@@ -187,9 +187,22 @@ func GetAdminList(w http.ResponseWriter, r *http.Request) {
 	c.SendSuccess(users)
 }
 
+// ResultStruct ...
+type ResultStruct struct {
+	model.UserShortInfo
+	Count int `pg:"result" json:"-"`
+}
+
+// SendSearchResult ...
+type SendSearchResult struct {
+	SearchResult []ResultStruct `json:"result"`
+	Count        int            `json:"count"`
+}
+
 // SearchUser ...
 func SearchUser(w http.ResponseWriter, r *http.Request) {
-	var users []model.UserShortInfo
+
+	var users []ResultStruct
 	c := &c.Context{Res: w, Req: r, Data: users}
 
 	uid := r.URL.Query().Get("uid")
@@ -210,14 +223,15 @@ func SearchUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err := db.DB.Query(&users,
-		`select
+		`SELECT
 			user_id,
 			user_name,
-			role
-		from
+			role, COUNT(*) OVER() AS result
+		FROM
 			user_short_info
-		where
+		WHERE
 			user_name like ?0
+
 		ORDER BY user_name ASC
 		LIMIT ?1 OFFSET ?2`, uid, limit, offset)
 
@@ -226,7 +240,9 @@ func SearchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.SendSuccess(users)
+	resData := &SendSearchResult{SearchResult: users, Count: users[0].Count}
+
+	c.SendSuccess(resData)
 }
 
 // RoleOrderPermission ...
