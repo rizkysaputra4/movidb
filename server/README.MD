@@ -195,6 +195,14 @@ Get List of admin
 
 &nbsp;
 
+#### Search User
+
+Search user
+
+    GET /admin/user/search?uid=admin&limit=2&offset=0
+
+&nbsp;
+
 #### Add New Movie Type
 
 Type is to identify is it movie, kdrama, or anime

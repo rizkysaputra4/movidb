@@ -170,13 +170,14 @@ func adminRouter() http.Handler {
 	// 	r.Delete("comment?{comment-id}", AdminDeleteComment)
 	// })
 
-	// r.Route("/user", func(r chi.Router) {
-	// 	r.Get("/", GetListOfUsers)
-	// 	r.Post("/new-user", RegisteringNewUser)
-	// 	r.Delete("/user?{user-id}", AdminDeleteUserAccount)
-	// 	r.Put("/punish?{user-id}", AdminPunishUser)
+	r.Route("/user", func(r chi.Router) {
+		r.Get("/search", h.SearchUser)
+		// 	r.Get("/", GetListOfUsers)
+		// 	r.Post("/new-user", RegisteringNewUser)
+		// 	r.Delete("/user?{user-id}", AdminDeleteUserAccount)
+		// 	r.Put("/punish?{user-id}", AdminPunishUser)
 
-	// })
+	})
 
 	return r
 }

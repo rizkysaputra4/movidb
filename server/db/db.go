@@ -1,7 +1,9 @@
 package db
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/go-pg/pg/v10"
 	"github.com/rizkysaputra4/moviwiki/server/env"
@@ -24,6 +26,10 @@ func init() {
 		Password: c.PostgresPass,
 		Database: c.PostgresDB,
 	})
+
+	ctx, _ := context.WithCancel(context.Background())
+	DB.WithContext(ctx)
+	DB.WithTimeout(time.Nanosecond)
 
 	fmt.Println("DB connected!")
 }

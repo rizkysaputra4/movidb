@@ -1,5 +1,5 @@
 <template>
-  <div class="window-width row justify-center items-center q-pt-md">
+  <div class="row justify-center items-center q-pt-md">
     <q-input
       style="width: 300px"
       color="black"

@@ -226,8 +226,6 @@ func SearchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(limit, offset)
-
 	c.SendSuccess(users)
 }
 
