@@ -187,6 +187,50 @@ func GetAdminList(w http.ResponseWriter, r *http.Request) {
 	c.SendSuccess(users)
 }
 
+// SearchUser ...
+func SearchUser(w http.ResponseWriter, r *http.Request) {
+	var users []model.UserShortInfo
+	c := &c.Context{Res: w, Req: r, Data: users}
+
+	uid := r.URL.Query().Get("uid")
+	uid = "%" + uid + "%"
+	limit := r.URL.Query().Get("limit")
+	offset := r.URL.Query().Get("offset")
+
+	if limit == "" {
+		limit = "10"
+	}
+
+	if offset == "" {
+		offset = "0"
+	}
+
+	if uid == "" {
+		uid = "admin"
+	}
+
+	_, err := db.DB.Query(&users,
+		`select
+			user_id,
+			user_name,
+			role
+		from
+			user_short_info
+		where
+			user_name like ?0
+		ORDER BY user_name ASC
+		LIMIT ?1 OFFSET ?2`, uid, limit, offset)
+
+	if err != nil {
+		c.ErrorGettingDataFromDB(err)
+		return
+	}
+
+	fmt.Println(limit, offset)
+
+	c.SendSuccess(users)
+}
+
 // RoleOrderPermission ...
 func RoleOrderPermission(w http.ResponseWriter, r *http.Request, obj interface{}, requestedRole int) (bool, error) {
 
