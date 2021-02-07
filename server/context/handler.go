@@ -60,11 +60,13 @@ func (c Context) SendSuccess(message ...interface{}) {
 	data := &StatusResponse{
 		Status: http.StatusOK,
 		Error:  "OK",
-		Data:   message[0],
+		Data:   c.Data,
 	}
 
 	if len(message) > 1 {
 		data.Data = message
+	} else if len(message) == 1 {
+		data.Data = message[0]
 	}
 
 	response, _ := json.Marshal(data)
