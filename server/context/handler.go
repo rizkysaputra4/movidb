@@ -51,7 +51,7 @@ func (c Context) SendError(code int, err string, message string) {
 
 	response, _ := json.Marshal(data)
 	c.Res.Header().Set("Content-Type", "application/json")
-	c.Res.WriteHeader(http.StatusOK)
+	c.Res.WriteHeader(http.StatusForbidden)
 	c.Res.Write(response)
 }
 

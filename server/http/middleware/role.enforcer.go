@@ -45,7 +45,7 @@ func RoleEnforcer(next http.Handler) http.Handler {
 			sessionRole := session.Values["role"]
 			if sessionRole == nil {
 				DeleteJWTFromCookie(w, r)
-				c.SendError(99, "Session nil", "Role admin but session not found")
+				c.SendError(http.StatusUnauthorized, "Session nil", "Role admin but session not found")
 				return
 			}
 

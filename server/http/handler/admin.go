@@ -75,7 +75,7 @@ func ChangeAdminLevel(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !authStatus {
-		c.SendError(http.StatusUnauthorized, "Unauthorized", "Peasant cannot promote king")
+		c.SendError(http.StatusForbidden, "Unauthorized", "Peasant cannot promote king")
 		return
 	}
 

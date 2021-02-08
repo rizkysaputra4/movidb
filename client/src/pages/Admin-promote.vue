@@ -132,7 +132,7 @@ export default {
             { withCredentials: true }
           )
           .then((res) => {
-            console.log(res.data.data);
+            console.log(res.data);
             if (res.data.data) {
               this.results = res.data.data.result;
               this.pagination.rowsNumber = res.data.data.count;
@@ -231,7 +231,7 @@ export default {
         })
         .then((res) => {
           console.log(res.data.status);
-          if (res.data.status === 401) {
+          if (res.data.status === 403) {
             this.$q.notify({
               type: "warning",
               multiLine: true,

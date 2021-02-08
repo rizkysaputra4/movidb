@@ -68,7 +68,7 @@ func UpdateFullUserInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if fmt.Sprint(claims["user_id"].(float64)) != (userID) {
-		c.SendError(http.StatusUnauthorized, "", "Cannot modify someone else data")
+		c.SendError(http.StatusForbidden, "", "Cannot modify someone else data")
 		return
 	}
 
