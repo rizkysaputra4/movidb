@@ -64,6 +64,7 @@ export default {
   data() {
     return {
       filter: "",
+      isAuthorized: true,
       pagination: {
         page: 1,
         rowsPerPage: this.getItemsPerPage(),
@@ -117,13 +118,23 @@ export default {
       return 9;
     },
   },
+
   beforeMount() {
     axios
       .get(`${process.env.API}/admin/admin-list`, { withCredentials: true })
       .then((res) => {
+        if (res.data.status === 401) {
+          this.isAuthorized = false;
+        }
         this.data = res.data.data;
       })
       .catch((err) => console.log(err));
+  },
+
+  beforeUpdate() {
+    if (!this.isAuthorized) {
+      this.$router.push("/login");
+    }
   },
 };
 </script>

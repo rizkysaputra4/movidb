@@ -62,10 +62,15 @@
               <div>
                 <q-btn
                   label="Login"
+                  :loading="loading"
                   type="submit"
                   color="primary"
                   @click="loginNotify"
-                />
+                >
+                  <template v-slot:loading>
+                    <q-spinner-facebook />
+                  </template>
+                </q-btn>
               </div>
             </q-form>
           </q-card-section>
@@ -90,6 +95,7 @@ export default {
       username: null,
       password: null,
       error: null,
+      loading: false,
       particleOptions: {
         background: {
           color: {
@@ -181,6 +187,7 @@ export default {
   methods: {
     onSubmit(e) {},
     loginNotify() {
+      this.loading = true;
       if (!this.username) {
         this.$q.notify({
           color: "red-5",
@@ -188,6 +195,7 @@ export default {
           icon: "warning",
           message: "UserName Required",
         });
+        this.loading = false;
         return;
       }
       if (!this.password) {
@@ -197,6 +205,7 @@ export default {
           icon: "warning",
           message: "Password Required",
         });
+        this.loading = false;
         return;
       }
       const data = {
@@ -217,6 +226,7 @@ export default {
               icon: "warning",
               message: res.data.message,
             });
+            this.loading = false;
             return;
           } else {
             this.$q.notify({
@@ -227,7 +237,10 @@ export default {
             this.$router.push("/dashboard");
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          this.loading = false;
+        });
     },
   },
   meta() {

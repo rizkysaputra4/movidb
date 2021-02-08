@@ -100,6 +100,7 @@ export default {
       userName: "admin",
       offset: 0,
       results,
+      isAuthorized: true,
       loading: false,
       prompt: false,
       hover: false,
@@ -133,9 +134,12 @@ export default {
           )
           .then((res) => {
             console.log(res.data);
+
             if (res.data.data) {
               this.results = res.data.data.result;
               this.pagination.rowsNumber = res.data.data.count;
+            } else if (res.data.status === 401) {
+              this.isAuthorized = false;
             } else {
               this.results = [];
               this.$q.notify({
@@ -200,7 +204,8 @@ export default {
             if (res.data.data) {
               this.results = res.data.data.result;
               this.pagination.rowsNumber = res.data.data.count;
-            } else {
+            } else if (res.data.status === 401) {
+              this.isAuthorized = false;
             }
             this.loading = false;
           })
@@ -230,7 +235,6 @@ export default {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res.data.status);
           if (res.data.status === 403) {
             this.$q.notify({
               type: "warning",
@@ -244,6 +248,13 @@ export default {
                   color: "white",
                 },
               ],
+            });
+          } else if (res.data.status === 401) {
+            this.isAuthorized = false;
+          } else if (res.data.status === 200) {
+            this.$q.notify({
+              message: "Success",
+              color: "green",
             });
           }
           this.onSubmit({
@@ -280,6 +291,11 @@ export default {
       .get(`${process.env.API}/public/my-role`, { withCredentials: true })
       .then((res) => (this.myRole = res.data.data.role))
       .catch((err) => console.log(err));
+  },
+  beforeUpdate() {
+    if (!this.isAuthorized) {
+      this.$router.push("/login");
+    }
   },
 };
 </script>

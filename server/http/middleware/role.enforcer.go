@@ -52,10 +52,15 @@ func RoleEnforcer(next http.Handler) http.Handler {
 			role = sessionRole.(int)
 		}
 
-		fmt.Printf("uid %v. role %v, path %v, method %v \n", uid, role, path, method)
+		// fmt.Printf("uid %v. role %v, path %v, method %v \n", uid, role, path, method)
 
 		access, err := DefineAccess(role, path, method)
-		fmt.Println("Casbin access; ", access, err)
+		// fmt.Println("Casbin access; ", access, err)
+
+		if err != nil {
+			c.SendError(http.StatusInternalServerError, err.Error(), "Error when define access")
+			return
+		}
 
 		if access {
 
@@ -90,7 +95,7 @@ func DefineAccess(role int, path string, method string) (bool, error) {
 	} else {
 		sub = "anonymous"
 	}
-	fmt.Println("sub: ", sub)
+	// fmt.Println("sub: ", sub)
 	ok, err := e.Enforce(sub, path, method)
 	if err != nil {
 		return false, err
