@@ -6,11 +6,12 @@ const routes = [
     children: [
       { path: "/indexc", component: () => import("pages/Index.vue") },
       { path: "/dashboard", component: () => import("pages/Dashboard.vue") },
-      { path: "/admin_list", component: () => import("pages/Admin-list.vue") },
+      { path: "/admin-list", component: () => import("pages/Admin-list.vue") },
       {
-        path: "/admin_promote",
+        path: "/admin-promote",
         component: () => import("pages/Admin-promote.vue"),
       },
+      { path: "/new-user", component: () => import("pages/AddUser.vue") },
     ],
     meta: { requiresAuth: true },
   },

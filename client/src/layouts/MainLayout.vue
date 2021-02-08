@@ -1,6 +1,6 @@
 <template>
   <q-layout
-    view="hHh lpR fFf"
+    view="hHh lpr fFf"
     :class="
       $q.dark.isActive ? 'header_dark bg-grey-9' : 'header_normal bg-grey-3'
     "
@@ -93,7 +93,7 @@
               <q-item
                 :header-inset-level="1"
                 active-class="tab-active"
-                to="/admin_list"
+                to="/admin-list"
                 exact
                 class="q-ma-sm perm_identity"
                 clickable
@@ -109,7 +109,7 @@
               <q-item
                 :header-inset-level="1"
                 active-class="tab-active"
-                to="/admin_promote"
+                to="/admin-promote"
                 exact
                 class="q-ma-sm perm_identity"
                 clickable
@@ -132,7 +132,7 @@
               <q-item
                 :header-inset-level="1"
                 active-class="tab-active"
-                to="/admin_list"
+                to="/new-user"
                 exact
                 class="q-ma-sm perm_identity"
                 clickable
@@ -142,7 +142,7 @@
                   <q-icon name="person_search" />
                 </q-item-section>
 
-                <q-item-section> Admin List </q-item-section>
+                <q-item-section> Add User </q-item-section>
               </q-item>
             </q-expansion-item>
 
