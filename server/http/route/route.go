@@ -84,42 +84,43 @@ func InitRoute() {
 		// 	})
 	})
 
-	// r.Route("/public", func(r chi.Router) {
-	// 	r.Route("/user", func(r chi.Router) {
-	// 		r.Get("/id?{id}", GetUserProfile)
-	// 		r.Get("/search?{keyword}", SearchUserProfile)
-	// 	})
+	r.Route("/public", func(r chi.Router) {
+		r.Get("/my-role", h.GetMyRole)
+		// 	r.Route("/user", func(r chi.Router) {
+		// 		r.Get("/id?{id}", GetUserProfile)
+		// 		r.Get("/search?{keyword}", SearchUserProfile)
+		// 	})
 
-	// 	r.Route("/movie", func(r chi.Router) {
-	// 		r.Get("/", GetRecentAddedMovie)
-	// 		r.Get("/search?{search-params}", SearchMovie)
+		// 	r.Route("/movie", func(r chi.Router) {
+		// 		r.Get("/", GetRecentAddedMovie)
+		// 		r.Get("/search?{search-params}", SearchMovie)
 
-	// 		r.Route("/movie?{movie-id}", func(r chi.Router) {
-	// 			r.Get("/", GetMovieById)
-	// 			r.Get("/reviews", GetMovieReviews)
-	// 			r.Get("/review-comment", GetReviewComment)
-	// 			r.Get("/comment", GetMovieComment)
+		// 		r.Route("/movie?{movie-id}", func(r chi.Router) {
+		// 			r.Get("/", GetMovieById)
+		// 			r.Get("/reviews", GetMovieReviews)
+		// 			r.Get("/review-comment", GetReviewComment)
+		// 			r.Get("/comment", GetMovieComment)
 
-	// 			r.Route("/eps?{eps}", func(r chi.Router) {
-	// 				r.Get("/", GetSeriesEpsInfo)
-	// 				r.Get("/person", GetPersonInEps)
-	// 				r.Get("/reviews", GetEpsReviews)
-	// 				r.Get("review-comment", GetReviewComment)
-	// 				r.Get("comment", GetEpsComment)
-	// 			})
-	// 		})
-	// 	})
+		// 			r.Route("/eps?{eps}", func(r chi.Router) {
+		// 				r.Get("/", GetSeriesEpsInfo)
+		// 				r.Get("/person", GetPersonInEps)
+		// 				r.Get("/reviews", GetEpsReviews)
+		// 				r.Get("review-comment", GetReviewComment)
+		// 				r.Get("comment", GetEpsComment)
+		// 			})
+		// 		})
+		// 	})
 
-	// 	r.Route("/act", func(r chi.Router) {
-	// 		r.Get("/", GetRecentAddedMoviePeson)
-	// 		r.Get("/search?{act-keyword}", SearchMoviePerson)
+		// 	r.Route("/act", func(r chi.Router) {
+		// 		r.Get("/", GetRecentAddedMoviePeson)
+		// 		r.Get("/search?{act-keyword}", SearchMoviePerson)
 
-	// 		r.Route("/act?{act-id}", func(r chi.Router) {
-	// 			r.Get("/", GetMoviePersonById)
-	// 			r.Get("/movie", PersonMovieList)
-	// 		})
-	// 	})
-	// })
+		// 		r.Route("/act?{act-id}", func(r chi.Router) {
+		// 			r.Get("/", GetMoviePersonById)
+		// 			r.Get("/movie", PersonMovieList)
+		// 		})
+		// 	})
+	})
 
 	fmt.Println("server running on port", c.ServerAPIPort)
 	http.ListenAndServe(c.ServerAPIPort, r)

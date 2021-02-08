@@ -121,7 +121,7 @@ export default {
     axios
       .get(`${process.env.API}/admin/admin-list`, { withCredentials: true })
       .then((res) => {
-        this.data = res.data.data[0];
+        this.data = res.data.data;
       })
       .catch((err) => console.log(err));
   },

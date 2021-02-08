@@ -7,7 +7,7 @@
         title="Search User"
         :data="results"
         :columns="columns"
-        row-key="name"
+        row-key="user_name"
         hide-header
         :pagination.sync="pagination"
         :loading="loading"
@@ -30,7 +30,12 @@
 
         <template v-slot:item="props">
           <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
-            <q-card>
+            <q-card
+              @click="onRowClick(props.row)"
+              v-ripple
+              class="q-hoverable cursor-pointer"
+              :key="props.row.user_id"
+              ><span class="q-focus-helper"></span>
               <q-card-section class="text-center">
                 <div class="row">
                   <div class="col">User ID: {{ props.row.user_id }}</div>
@@ -43,11 +48,51 @@
           </div>
         </template>
       </q-table>
+
+      <q-dialog v-model="prompt" persistent>
+        <q-card style="min-width: 350px">
+          <q-card-section>
+            <div class="text-h6">User</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            <div class="col">User ID: {{ currentUser.user_id }}</div>
+            <div class="col">UserName: {{ currentUser.user_name }}</div>
+            <div class="col">Role: {{ currentUser.role }}</div>
+            <div class="col">New Role: {{ newUserRole }}</div>
+          </q-card-section>
+
+          <q-card-section>
+            <q-badge color="secondary"> Model: {{ newUserRole }} </q-badge>
+
+            <q-slider
+              v-model="newUserRole"
+              :min="myRole + 1"
+              :max="51"
+              :step="1"
+              label
+              label-always
+              color="light-green"
+            />
+          </q-card-section>
+
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" v-close-popup />
+            <q-btn
+              flat
+              label="Submit"
+              v-close-popup
+              @click.prevent="onSubmitNewRole()"
+            />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
   </q-no-ssr>
 </template>
 <script>
 import axios from "axios";
+
 var results = [];
 export default {
   data() {
@@ -56,6 +101,11 @@ export default {
       offset: 0,
       results,
       loading: false,
+      prompt: false,
+      hover: false,
+      currentUser: {},
+      myRole: 99,
+      newUserRole: 21,
       pagination: {
         sortBy: "desc",
         descending: false,
@@ -70,6 +120,7 @@ export default {
       ],
     };
   },
+
   methods: {
     onSubmit(e) {
       e.preventDefault;
@@ -134,6 +185,7 @@ export default {
     },
     onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
+      console.log(props);
       console.log(page);
       this.loading = true;
       if (this.userName) {
@@ -162,6 +214,47 @@ export default {
       this.pagination.sortBy = sortBy;
       this.pagination.descending = descending;
     },
+    onRowClick(row) {
+      console.log("clicked on", row);
+      this.currentUser = row;
+      this.prompt = true;
+      console.log(this.myRole);
+    },
+    onSubmitNewRole() {
+      var data = {
+        user_id: this.currentUser.user_id,
+        role: this.newUserRole,
+      };
+      axios
+        .put(`${process.env.API}/admin/admin-level`, data, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          console.log(res.data.status);
+          if (res.data.status === 401) {
+            this.$q.notify({
+              type: "warning",
+              multiLine: true,
+              icon: "warning",
+              message: res.data.message,
+              position: "center",
+              actions: [
+                {
+                  label: "Dismiss",
+                  color: "white",
+                },
+              ],
+            });
+          }
+          this.onSubmit({
+            pagination: this.pagination,
+            filter: undefined,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   computed: {
     cardContainerClass() {
@@ -182,9 +275,17 @@ export default {
       filter: undefined,
     });
   },
+  beforeMount() {
+    axios
+      .get(`${process.env.API}/public/my-role`, { withCredentials: true })
+      .then((res) => (this.myRole = res.data.data.role))
+      .catch((err) => console.log(err));
+  },
 };
 </script>
 <style lang="sass">
+
+
 .grid-masonry
   flex-direction: column
   height: 700px

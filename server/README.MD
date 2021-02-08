@@ -337,3 +337,15 @@ Route to update user information like, birthdate, social media link, etc.
 ```
 
 for sex variable: true equal to male, false equal to female
+
+&nbsp;
+
+### PUBLIC ENDPOINT
+
+&nbsp;
+
+#### Get My Role
+
+    http://localhost:3000/public/my-role
+
+This will return your role in number 1 - 99
