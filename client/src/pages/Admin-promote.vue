@@ -92,7 +92,7 @@
 </template>
 <script>
 import axios from "axios";
-import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 var results = [];
 export default {
@@ -124,7 +124,7 @@ export default {
 
   methods: {
     ...mapActions("userSearch", ["searchUser"]),
-    ...mapMutations("userSearch", ["isNotAuthorized"]),
+
     onSubmit(e) {
       this.loading = true;
       if (this.userName) {
@@ -254,6 +254,11 @@ export default {
           console.log(err);
         });
     },
+    onRowClick(row) {
+      this.currentUser = row;
+      this.prompt = true;
+      console.log(this.myRole);
+    },
   },
   computed: {
     cardContainerClass() {
@@ -275,10 +280,10 @@ export default {
 
   mounted() {
     // get initial data from server (1st page)
-    this.onSubmit({
-      pagination: this.pagination,
-      filter: undefined,
-    });
+    // this.onSubmit({
+    //   pagination: this.pagination,
+    //   filter: undefined,
+    // });
   },
   beforeMount() {
     axios
