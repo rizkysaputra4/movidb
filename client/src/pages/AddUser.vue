@@ -7,18 +7,22 @@
         filled
         v-model="userName"
         label="UserName *"
-        hint="Minimum 6 character"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        hint="Minimum 4 character"
+        debounce="600"
+        :rules="[
+          (val) => (val && val.length >= 4) || 'Please type something',
+          isUserNameExist,
+        ]"
       />
 
       <q-input
         filled
         v-model="email"
         label="Email *"
-        lazy-rules
+        debounce="600"
         :rules="[
           (val) => (val !== null && val !== '') || 'Please type your Email',
+          isEmailValidAndNotUsed,
         ]"
       />
 
@@ -27,10 +31,10 @@
         type="password"
         v-model="password"
         hint="Minimum 6 character"
+        debounce="500"
         label="Password *"
-        lazy-rules
         :rules="[
-          (val) => (val !== null && val !== '') || 'Please type your Password',
+          (val) => (val && val.length >= 6) || 'Please type your Password',
         ]"
       />
 
@@ -59,6 +63,7 @@
 </template>
 
 <script>
+import axios from "axios";
 var today = new Date();
 var dd = String(today.getDate()).padStart(2, "0");
 var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -82,7 +87,7 @@ export default {
   methods: {
     onSubmit() {
       var profile = {
-        user_name: this.userName,
+        user_name: this.userName.trim(),
         email: this.email,
         password: this.password,
         country_id: this.country,
@@ -92,6 +97,25 @@ export default {
         fb_link: this.facebookLink,
       };
       console.log(profile);
+
+      axios
+        .post(`${process.env.API}/auth/register`, profile, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.data.status != 200) {
+            this.$q.notify({
+              type: "negative",
+              message: `Error: ${res.data.message}`,
+            });
+          } else {
+            this.$q.notify({
+              type: "positive",
+              message: `Success`,
+            });
+          }
+        })
+        .catch((err) => console.log(err));
       //   if (this.accept !== true) {
       //     this.$q.notify({
       //       color: "red-5",
@@ -113,6 +137,54 @@ export default {
       this.name = null;
       this.age = null;
       this.accept = false;
+    },
+
+    isUserNameExist(val) {
+      // simulating a delay
+
+      return new Promise((resolve, reject) => {
+        var data = {
+          user_name: this.userName.trim(),
+        };
+        axios
+          .post(`${process.env.API}/auth/register-username`, data, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            if (res.data.status !== 200) {
+              resolve(res.data.error);
+            } else {
+              resolve(true);
+            }
+            console.log(res.data);
+          })
+          .catch((err) => console.log(err));
+      });
+    },
+    isEmailValidAndNotUsed(val) {
+      return new Promise((resolve, reject) => {
+        const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+        if (!emailPattern.test(val.trim())) {
+          return resolve("Please enter valid email");
+        }
+
+        var data = {
+          email: val.trim(),
+        };
+        axios
+          .post(`${process.env.API}/auth/register-email`, data, {
+            withCredentials: true,
+          })
+          .then((res) => {
+            if (res.data.status !== 200) {
+              resolve(res.data.error);
+            } else {
+              resolve(true);
+            }
+            console.log(res.data);
+          })
+          .catch((err) => console.log(err));
+      });
     },
   },
 };

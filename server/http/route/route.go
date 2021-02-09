@@ -34,11 +34,11 @@ func InitRoute() {
 	r.Use(middleware.UpdateJWTExp)
 
 	r.Route("/auth", func(r chi.Router) {
-		r.Get("/register-username", h.CheckIfUserNameExist) // Check if username already exist
-		r.Get("/register-email", h.CheckIfEmailExist)       // Check if email already exist
-		r.Get("/register", h.RegisteringNewUser)            // Register new user
-		r.Get("/login-username", h.CheckIfUserExist)        // Check if user exist using username or email when login
-		r.Post("/login-password", h.CheckIfPasswordMatch)   // Match the username or email with password
+		r.Post("/register-username", h.CheckIfUserNameExist) // Check if username already exist
+		r.Post("/register-email", h.CheckIfEmailExist)       // Check if email already exist
+		r.Post("/register", h.RegisteringNewUser)            // Register new user
+		r.Get("/login-username", h.CheckIfUserExist)         // Check if user exist using username or email when login
+		r.Post("/login-password", h.CheckIfPasswordMatch)    // Match the username or email with password
 		r.Get("/logout", h.LogOut)
 	})
 

@@ -346,6 +346,6 @@ for sex variable: true equal to male, false equal to female
 
 #### Get My Role
 
-    http://localhost:3000/public/my-role
+GET /public/my-role
 
 This will return your role in number 1 - 99

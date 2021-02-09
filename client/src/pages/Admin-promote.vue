@@ -5,7 +5,7 @@
         grid
         :card-container-class="cardContainerClass"
         title="Search User"
-        :data="results"
+        :data="getResult"
         :columns="columns"
         row-key="user_name"
         hide-header
@@ -92,6 +92,7 @@
 </template>
 <script>
 import axios from "axios";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 var results = [];
 export default {
@@ -100,7 +101,6 @@ export default {
       userName: "admin",
       offset: 0,
       results,
-      isAuthorized: true,
       loading: false,
       prompt: false,
       hover: false,
@@ -123,23 +123,20 @@ export default {
   },
 
   methods: {
+    ...mapActions("userSearch", ["searchUser"]),
+    ...mapMutations("userSearch", ["isNotAuthorized"]),
     onSubmit(e) {
-      e.preventDefault;
       this.loading = true;
       if (this.userName) {
-        axios
-          .get(
-            `${process.env.API}/admin/user/search?uid=${this.userName}&limit=${this.pagination.rowsPerPage}&offset=0`,
-            { withCredentials: true }
-          )
+        var searchComp = {
+          keyword: this.userName,
+          limit: this.pagination.rowsPerPage,
+          offset: (this.pagination.page - 1) * this.pagination.rowsPerPage,
+        };
+        this.searchUser(searchComp)
           .then((res) => {
-            console.log(res.data);
-
             if (res.data.data) {
-              this.results = res.data.data.result;
               this.pagination.rowsNumber = res.data.data.count;
-            } else if (res.data.status === 401) {
-              this.isAuthorized = false;
             } else {
               this.results = [];
               this.$q.notify({
@@ -193,19 +190,15 @@ export default {
       console.log(page);
       this.loading = true;
       if (this.userName) {
-        axios
-          .get(
-            `${process.env.API}/admin/user/search?uid=${
-              this.userName
-            }&limit=${rowsPerPage}&offset=${(page - 1) * rowsPerPage}`,
-            { withCredentials: true }
-          )
+        var searchComp = {
+          keyword: this.userName,
+          limit: rowsPerPage,
+          offset: (page - 1) * rowsPerPage,
+        };
+        this.searchUser(searchComp)
           .then((res) => {
             if (res.data.data) {
-              this.results = res.data.data.result;
               this.pagination.rowsNumber = res.data.data.count;
-            } else if (res.data.status === 401) {
-              this.isAuthorized = false;
             }
             this.loading = false;
           })
@@ -219,13 +212,8 @@ export default {
       this.pagination.sortBy = sortBy;
       this.pagination.descending = descending;
     },
-    onRowClick(row) {
-      console.log("clicked on", row);
-      this.currentUser = row;
-      this.prompt = true;
-      console.log(this.myRole);
-    },
     onSubmitNewRole() {
+      console.log(this.getResult);
       var data = {
         user_id: this.currentUser.user_id,
         role: this.newUserRole,
@@ -250,7 +238,7 @@ export default {
               ],
             });
           } else if (res.data.status === 401) {
-            this.isAuthorized = false;
+            this.isNotAuthorized();
           } else if (res.data.status === 200) {
             this.$q.notify({
               message: "Success",
@@ -277,6 +265,12 @@ export default {
 
       return void 0;
     },
+    ...mapGetters("userSearch", ["getResult", "isAuthorized"]),
+    // searchResultState: {
+    //   get() {
+    //     return this.$store.state.userSearch.searchResult;
+    //   },
+    // },
   },
 
   mounted() {

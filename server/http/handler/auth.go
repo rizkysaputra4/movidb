@@ -51,18 +51,33 @@ func CheckIfEmailExist(w http.ResponseWriter, r *http.Request) {
 	c.SendSuccess()
 }
 
+// ReceivedUserInfo ...
+type ReceivedUserInfo struct {
+	model.UserShortInfo
+	model.UserInformation
+}
+
 // RegisteringNewUser is handling register request
 func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
-	user := &model.UserShortInfo{}
+	fullInfo := &ReceivedUserInfo{}
 	c := &c.Context{
 		Res:  w,
 		Req:  r,
-		Data: user,
+		Data: fullInfo,
 	}
 
 	if err := c.JSONDecoder(); err != nil {
 		return
 	}
+
+	user := fullInfo.UserShortInfo
+
+	// user := &model.UserShortInfo{
+	// 	UserName:  fullInfo.UserName,
+	// 	CountryID: fullInfo.CountryID,
+	// 	Password:  fullInfo.Password,
+	// 	Email:     fullInfo.Email,
+	// }
 
 	if user.Password == "" || len(user.Password) < 6 {
 		c.SendError(http.StatusBadRequest, "Password too Short, must be 6 character long", "")
@@ -84,7 +99,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	col := []string{"user_id", "user_name", "country_id", "password", "email", "last_request"}
-	_, err = db.DB.Model(c.Data).
+	_, err = db.DB.Model(&user).
 		Column(col...).
 		Insert()
 
@@ -93,12 +108,14 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	completeUserData := &model.UserInformation{
-		UserID:       user.UserID,
-		RegisterDate: time.Now().UTC().Format("2006-01-02"),
-	}
+	// completeUserData := &model.UserInformation{
+	// 	UserFullName: fullInfo.UserFullName,
 
-	_, err = db.DB.Model(completeUserData).Insert()
+	// }
+	completeUserData := fullInfo.UserInformation
+	completeUserData.UserID = user.UserID
+
+	_, err = db.DB.Model(&completeUserData).Insert()
 	if err != nil {
 		c.ErrorInsertingDataIntoDB(err)
 		return
