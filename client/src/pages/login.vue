@@ -85,6 +85,7 @@
 import Vue from "vue";
 import Particles from "particles.vue";
 import axios from "axios";
+import { mapMutations } from "vuex";
 
 Vue.use(Particles);
 
@@ -218,7 +219,6 @@ export default {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res.data);
           if (res.data.status !== 200) {
             this.$q.notify({
               color: "red-5",
@@ -228,20 +228,41 @@ export default {
             });
             this.loading = false;
             return;
-          } else {
+          } else if (res.data.data.role <= 11) {
             this.$q.notify({
               color: "green",
               textColor: "white",
               message: "Logged In",
             });
+            this.loading = false;
             this.$router.push("/dashboard");
+          } else if (res.data.data.role > 11) {
+            this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: "For Admin Only",
+            });
+            this.loading = false;
           }
+
+          let data = {
+            userID: res.data.data.userID,
+            userName: res.data.data.user_name,
+            fullName: res.data.data.user_full_name,
+            role: res.data.data.role,
+            email: res.data.data.email,
+          };
+
+          this.updateDataAuth(data);
+          console.log(data);
         })
         .catch((err) => {
           console.log(err);
           this.loading = false;
         });
     },
+    ...mapMutations("authStats", ["updateDataAuth"]),
   },
   meta() {
     return {

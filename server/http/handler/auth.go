@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -158,17 +159,37 @@ type Login struct {
 // CheckIfPasswordMatch ...
 func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 	pw := &Login{}
-	userInfo := &model.UserShortInfo{}
+	userInfo := &UserFull{}
 	c := &c.Context{Res: w, Req: r, Data: pw}
 	if err := c.JSONDecoder(); err != nil {
 		return
 	}
 
-	err := db.DB.Model(userInfo).
-		Where("user_name = ?", pw.Username).
-		WhereOr("email = ?", pw.Email).
-		Column("user_id", "user_name", "email", "password", "role").
-		Select()
+	_, err := db.DB.Query(userInfo,
+		`select  
+			user_short_info.user_id, 
+			user_name,
+			user_full_name,
+			country_id,
+			email,
+			password,
+			sex,
+			role 
+		from 
+			user_short_info 
+		inner join 
+			user_information 
+		on 
+			user_short_info.user_id = user_information.user_id
+		where 
+			user_name = ?`, pw.Username)
+
+	fmt.Println(userInfo)
+	// err := db.DB.Model(userInfo).
+	// 	Where("user_name = ?", pw.Username).
+	// 	WhereOr("email = ?", pw.Email).
+	// 	Column("user_id", "user_name", "email", "password", "role").
+	// 	Select()
 
 	if err != nil {
 		c.ErrorGettingDataFromDB(err)
@@ -180,15 +201,15 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	middleware.StoreJWT(w, r, userInfo.UserID, userInfo.Role)
+	middleware.StoreJWT(w, r, userInfo.UserShortInfo.UserID, userInfo.Role)
 
 	if userInfo.Role < 11 {
-		middleware.StoreSession(w, r, userInfo.UserID, userInfo.Role)
+		middleware.StoreSession(w, r, userInfo.UserShortInfo.UserID, userInfo.Role)
 	}
 
 	userInfo.UpdateLastRequest()
-
-	c.SendSuccess()
+	userInfo.Password = ""
+	c.SendSuccess(userInfo)
 }
 
 // LogOut ...

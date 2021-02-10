@@ -46,3 +46,8 @@ func GetAllCountry(w http.ResponseWriter, r *http.Request) {
 	c.SendSuccess(allCountry)
 
 }
+
+// GetMyID ...
+func GetMyID(w http.ResponseWriter, r *http.Request) {
+
+}

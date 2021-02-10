@@ -20,7 +20,9 @@
           <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
         </q-avatar>
 
-        <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+        <div class="text-subtitle1 q-mt-md q-mb-xs">
+          {{ getAuthState.fullName }}
+        </div>
 
         <q-btn
           color="primary"
@@ -38,6 +40,8 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
@@ -53,6 +57,9 @@ export default {
           this.$router.push("/login");
         });
     },
+  },
+  computed: {
+    ...mapGetters("authStats", ["getAuthState"]),
   },
 };
 </script>

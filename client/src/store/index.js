@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import userSearch from "./user-search";
+import authStats from "./authStats";
 
 // import example from './module-example'
 
@@ -19,6 +20,7 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       userSearch,
+      authStats,
     },
 
     // enable strict mode (adds overhead!)
