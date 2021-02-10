@@ -114,6 +114,7 @@ func RegisteringNewUser(w http.ResponseWriter, r *http.Request) {
 	// }
 	completeUserData := fullInfo.UserInformation
 	completeUserData.UserID = user.UserID
+	completeUserData.RegisterDate = time.Now().UTC().Format("2006-01-02")
 
 	_, err = db.DB.Model(&completeUserData).Insert()
 	if err != nil {

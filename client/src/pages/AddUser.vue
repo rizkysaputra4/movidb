@@ -38,7 +38,25 @@
         ]"
       />
 
-      <q-input filled v-model="country" label="Country" />
+      <q-select
+        filled
+        v-model="country"
+        :value="country"
+        label="Country"
+        use-input
+        hide-selected
+        fill-input
+        input-debounce="0"
+        :options="options"
+        @filter="filterFn"
+        @input-value="setModel"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
 
       <q-input filled v-model="fullName" label="Full Name" />
 
@@ -70,6 +88,7 @@ var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
 var yyyy = today.getFullYear();
 
 today = mm + "/" + dd + "/" + yyyy;
+let stringOptions = [];
 export default {
   data() {
     return {
@@ -81,17 +100,20 @@ export default {
       birthDate: today,
       bio: null,
       facebookLink: null,
+      options: stringOptions,
+      countries: null,
     };
   },
 
   methods: {
     onSubmit() {
+      var countryIndex = this.options.indexOf(this.country);
       var profile = {
         user_name: this.userName.trim(),
-        email: this.email,
-        password: this.password,
-        country_id: this.country,
-        user_full_name: this.fullName,
+        email: this.email.trim(),
+        password: this.password.trim(),
+        country_id: this.countries[countryIndex],
+        user_full_name: this.fullName.trim(),
         birthdate: this.birthDate,
         bio: this.bio,
         fb_link: this.facebookLink,
@@ -113,24 +135,17 @@ export default {
               type: "positive",
               message: `Success`,
             });
+            this.userName = null;
+            this.email = null;
+            this.password = null;
+            this.country = null;
+            this.fullName = null;
+            this.birthDate = today;
+            this.bio = null;
+            this.facebookLink = null;
           }
         })
         .catch((err) => console.log(err));
-      //   if (this.accept !== true) {
-      //     this.$q.notify({
-      //       color: "red-5",
-      //       textColor: "white",
-      //       icon: "warning",
-      //       message: "You need to accept the license and terms first",
-      //     });
-      //   } else {
-      //     this.$q.notify({
-      //       color: "green-4",
-      //       textColor: "white",
-      //       icon: "cloud_done",
-      //       message: "Submitted",
-      //     });
-      //   }
     },
 
     onReset() {
@@ -186,6 +201,44 @@ export default {
           .catch((err) => console.log(err));
       });
     },
+    filterFn(val, update, abort) {
+      update(
+        () => {
+          if (val === "") {
+            this.options = stringOptions;
+          } else {
+            const needle = val.toLowerCase();
+            this.options = stringOptions.filter(
+              (v) => v.toLowerCase().indexOf(needle) > -1
+            );
+          }
+        },
+
+        // next function is available in Quasar v1.7.4+;
+        // "ref" is the Vue reference to the QSelect
+        (ref) => {
+          if (val !== "" && ref.options.length > 0 && ref.optionIndex === -1) {
+            ref.moveOptionSelection(1, true); // focus the first selectable option and do not update the input-value
+            ref.toggleOption(ref.options[ref.optionIndex], true); // toggle the focused option
+          }
+        }
+      );
+    },
+
+    setModel(val) {
+      this.country = val;
+    },
+  },
+  mounted() {
+    axios.get(`${process.env.API}/public/country-list`).then((res) => {
+      stringOptions = res.data.data.map((res) => {
+        return res.N;
+      });
+      this.countries = res.data.data.map((res) => {
+        return res.I;
+      });
+      console.log(stringOptions);
+    });
   },
 };
 </script>

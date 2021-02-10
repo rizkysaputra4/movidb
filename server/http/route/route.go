@@ -86,6 +86,7 @@ func InitRoute() {
 
 	r.Route("/public", func(r chi.Router) {
 		r.Get("/my-role", h.GetMyRole)
+		r.Get("/country-list", h.GetAllCountry)
 		// 	r.Route("/user", func(r chi.Router) {
 		// 		r.Get("/id?{id}", GetUserProfile)
 		// 		r.Get("/search?{keyword}", SearchUserProfile)
