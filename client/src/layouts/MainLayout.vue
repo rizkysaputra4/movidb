@@ -49,12 +49,7 @@
           to="/"
         />
 
-        <q-btn round flat>
-          <q-avatar size="26px">
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-          </q-avatar>
-          <q-tooltip>Account</q-tooltip>
-        </q-btn>
+        <AccountSetting />
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -179,7 +174,12 @@
 </template>
 
 <script>
+import AccountSetting from "../components/AccountSetting.vue";
 export default {
+  name: "Layout",
+  components: {
+    AccountSetting,
+  },
   data() {
     return {
       left: false,
