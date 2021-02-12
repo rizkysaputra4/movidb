@@ -1,4 +1,4 @@
-module github.com/rizkysaputra4/moviwiki
+module github.com/rizkysaputra4/moviwiki/api
 
 go 1.15
 
@@ -16,6 +16,7 @@ require (
 	github.com/gorilla/sessions v1.2.1
 	github.com/lib/pq v1.9.0
 	github.com/mattn/go-colorable v0.1.8 // indirect
+	github.com/rizkysaputra4/moviwiki v0.0.0-20210209170500-37f4dd34513b // indirect
 	// github.com/labstack/echo v3.3.10+incompatible
 	// github.com/labstack/echo-contrib v0.9.0 // indirect
 	// github.com/labstack/gommon v0.3.0 // indirect
