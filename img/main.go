@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/rizkysaputra4/moviwiki/img/http"
+)
 
 func main() {
-	fmt.Println("go run")
+	fmt.Println("go main")
+	http.Http()
 }
