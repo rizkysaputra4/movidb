@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/rizkysaputra4/moviwiki/server/model"
+	"github.com/rizkysaputra4/moviwiki/api/model"
 )
 
 // UpdateLastRequest is middleware that updating last request for every api request

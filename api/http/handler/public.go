@@ -3,10 +3,10 @@ package handler
 import (
 	"net/http"
 
-	c "github.com/rizkysaputra4/moviwiki/server/context"
-	"github.com/rizkysaputra4/moviwiki/server/db"
-	"github.com/rizkysaputra4/moviwiki/server/http/middleware"
-	"github.com/rizkysaputra4/moviwiki/server/model"
+	c "github.com/rizkysaputra4/moviwiki/api/context"
+	"github.com/rizkysaputra4/moviwiki/api/db"
+	"github.com/rizkysaputra4/moviwiki/api/http/middleware"
+	"github.com/rizkysaputra4/moviwiki/api/model"
 )
 
 // GetMyRole ...

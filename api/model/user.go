@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	. "github.com/rizkysaputra4/moviwiki/server/db"
+	. "github.com/rizkysaputra4/moviwiki/api/db"
 )
 
 // UserShortInfo ...

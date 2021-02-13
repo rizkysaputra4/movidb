@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rizkysaputra4/moviwiki/server/comp"
-	c "github.com/rizkysaputra4/moviwiki/server/context"
-	"github.com/rizkysaputra4/moviwiki/server/db"
-	"github.com/rizkysaputra4/moviwiki/server/http/middleware"
-	"github.com/rizkysaputra4/moviwiki/server/model"
+	"github.com/rizkysaputra4/moviwiki/api/comp"
+	c "github.com/rizkysaputra4/moviwiki/api/context"
+	"github.com/rizkysaputra4/moviwiki/api/db"
+	"github.com/rizkysaputra4/moviwiki/api/http/middleware"
+	"github.com/rizkysaputra4/moviwiki/api/model"
 	"golang.org/x/crypto/bcrypt"
 )
 

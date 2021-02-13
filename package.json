@@ -16,8 +16,8 @@
     "concurrently": "^5.3.0"
   },
   "scripts": {
-    "admin": "cd client & npm run dev",
-    "server": "cd server & nodemon --exec go run main.go",
+    "admin": "cd adminUI & npm run dev",
+    "server": "cd api & nodemon --exec go run main.go",
     "redis": "cd redis/64bit & redis-server",
     "dev": "concurrently --kill-others \"npm run admin\" \"npm run server\""
   },

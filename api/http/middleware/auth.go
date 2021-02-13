@@ -8,9 +8,9 @@ import (
 	"github.com/admpub/log"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/sessions"
-	c "github.com/rizkysaputra4/moviwiki/server/context"
-	"github.com/rizkysaputra4/moviwiki/server/db"
-	"github.com/rizkysaputra4/moviwiki/server/env"
+	c "github.com/rizkysaputra4/moviwiki/api/context"
+	"github.com/rizkysaputra4/moviwiki/api/db"
+	"github.com/rizkysaputra4/moviwiki/api/env"
 )
 
 //StoreJWT ...

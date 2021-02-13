@@ -1,7 +1,7 @@
 package comp
 
 import (
-	"github.com/rizkysaputra4/moviwiki/server/db"
+	"github.com/rizkysaputra4/moviwiki/api/db"
 )
 
 // CheckIfExist ...

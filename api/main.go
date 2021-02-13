@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/rizkysaputra4/moviwiki/server/app"
+	"github.com/rizkysaputra4/moviwiki/api/app"
 )
 
 func main() {

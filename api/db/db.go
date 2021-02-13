@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-pg/pg/v10"
-	"github.com/rizkysaputra4/moviwiki/server/env"
+	"github.com/rizkysaputra4/moviwiki/api/env"
 	"gopkg.in/boj/redistore.v1"
 )
 

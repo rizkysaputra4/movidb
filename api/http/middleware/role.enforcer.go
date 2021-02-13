@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/casbin/casbin/v2"
-	c "github.com/rizkysaputra4/moviwiki/server/context"
-	"github.com/rizkysaputra4/moviwiki/server/db"
+	c "github.com/rizkysaputra4/moviwiki/api/context"
+	"github.com/rizkysaputra4/moviwiki/api/db"
 )
 
 // var store = sessions.NewCookieStore([]byte("moviwiki"))

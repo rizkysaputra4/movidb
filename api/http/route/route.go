@@ -7,9 +7,9 @@ import (
 	"github.com/go-chi/chi"
 	mid "github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-	"github.com/rizkysaputra4/moviwiki/server/env"
-	h "github.com/rizkysaputra4/moviwiki/server/http/handler"
-	"github.com/rizkysaputra4/moviwiki/server/http/middleware"
+	"github.com/rizkysaputra4/moviwiki/api/env"
+	h "github.com/rizkysaputra4/moviwiki/api/http/handler"
+	"github.com/rizkysaputra4/moviwiki/api/http/middleware"
 )
 
 // InitRoute initialize function
