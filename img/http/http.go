@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	mid "github.com/rizkysaputra4/moviwiki/img/http/middleware"
 )
 
 // RouteInit ...
@@ -15,11 +16,6 @@ func RouteInit() {
 		Format: "method=${method}, uri=${uri}, status=${status}, latency_human=${latency_human}\n",
 	}))
 
-	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey:  []byte("moviwiki"),
-		TokenLookup: "query:Auth-Token",
-	}))
-
 	s := &http.Server{
 		Addr:         ":3001",
 		ReadTimeout:  20 * time.Minute,
@@ -27,6 +23,13 @@ func RouteInit() {
 	}
 
 	e.GET("/", hello)
+
+	post := e.Group("/post")
+
+	post.Use(mid.JWTAuth)
+
+	post.GET("/post", hello)
+
 	e.Logger.Fatal(e.StartServer(s))
 }
 

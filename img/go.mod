@@ -2,4 +2,7 @@ module github.com/rizkysaputra4/moviwiki/img
 
 go 1.15
 
-require github.com/labstack/echo/v4 v4.2.0
+require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/labstack/echo/v4 v4.2.0
+)
