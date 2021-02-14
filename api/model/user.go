@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	. "github.com/rizkysaputra4/moviwiki/api/db"
+	"github.com/rizkysaputra4/moviwiki/api/db"
 )
 
 // UserShortInfo ...
@@ -52,8 +52,9 @@ type UserInformation struct {
 
 // UpdateLastRequest ...
 func (u *UserShortInfo) UpdateLastRequest() error {
+
 	u.LastRequest = time.Now().UTC().Format("2006-01-02 15:04:05")
-	_, err := DB.Model(u).
+	_, err := db.DB.Model(u).
 		Where("user_id = ?user_id").
 		Column("last_request").
 		Update()

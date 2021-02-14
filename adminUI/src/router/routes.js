@@ -12,6 +12,7 @@ const routes = [
         component: () => import("pages/Admin-promote.vue"),
       },
       { path: "/new-user", component: () => import("pages/AddUser.vue") },
+      { path: "/profile", component: () => import("pages/Profile.vue") },
     ],
     meta: { requiresAuth: true },
   },

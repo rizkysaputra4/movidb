@@ -143,7 +143,7 @@
 
             <q-item
               active-class="tab-active"
-              to="/my_profile"
+              to="/profile"
               class="q-ma-sm navigation-item"
               clickable
               v-ripple

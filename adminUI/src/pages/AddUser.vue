@@ -49,7 +49,6 @@
         input-debounce="0"
         :options="options"
         @filter="filterFn"
-        @input-value="setModel"
       >
         <template v-slot:no-option>
           <q-item>

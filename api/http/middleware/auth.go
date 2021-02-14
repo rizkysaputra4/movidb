@@ -16,6 +16,7 @@ import (
 //StoreJWT ...
 func StoreJWT(w http.ResponseWriter, r *http.Request, userID int, role int) {
 	c := &c.Context{Res: w, Req: r}
+
 	token, err := CreateToken(uint64(userID), role)
 	if err != nil {
 		c.SendError(http.StatusInternalServerError, err.Error(), "Error when creating JWT")

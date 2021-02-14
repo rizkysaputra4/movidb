@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -168,6 +167,7 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 	_, err := db.DB.Query(userInfo,
 		`select  
 			user_short_info.user_id, 
+			user_information.user_id,
 			user_name,
 			user_full_name,
 			country_id,
@@ -184,7 +184,6 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 		where 
 			user_name = ?`, pw.Username)
 
-	fmt.Println(userInfo)
 	// err := db.DB.Model(userInfo).
 	// 	Where("user_name = ?", pw.Username).
 	// 	WhereOr("email = ?", pw.Email).
@@ -200,6 +199,8 @@ func CheckIfPasswordMatch(w http.ResponseWriter, r *http.Request) {
 		c.SendError(http.StatusBadRequest, err.Error(), "Error when bcrypting user password")
 		return
 	}
+
+	userInfo.UserShortInfo.UserID = userInfo.UserInformation.UserID
 
 	middleware.StoreJWT(w, r, userInfo.UserShortInfo.UserID, userInfo.Role)
 
